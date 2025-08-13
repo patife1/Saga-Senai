@@ -1,0 +1,326 @@
+@model SistemaEstoque.ViewModels.DashboardViewModel
+@{
+    ViewData["Title"] = "Dashboard";
+}
+
+<div class="row">
+    <div class="col-12">
+        <h1 class="mb-4">
+            <i class="bi bi-speedometer2"></i> Dashboard - Sistema de Estoque
+        </h1>
+    </div>
+</div>
+
+<!-- Cards de Estatísticas -->
+<div class="row mb-4">
+    <div class="col-md-3">
+        <div class="card bg-primary text-white">
+            <div class="card-body">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <h5 class="card-title">Produtos</h5>
+                        <h2>@Model.TotalProdutos</h2>
+                    </div>
+                    <div class="align-self-center">
+                        <i class="bi bi-box-seam fs-1"></i>
+                    </div>
+                </div>
+            </div>
+            <div class="card-footer">
+                <a asp-controller="Produtos" asp-action="Index" class="text-white text-decoration-none">
+                    Ver todos <i class="bi bi-arrow-right"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card bg-success text-white">
+            <div class="card-body">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <h5 class="card-title">Clientes</h5>
+                        <h2>@Model.TotalClientes</h2>
+                    </div>
+                    <div class="align-self-center">
+                        <i class="bi bi-people fs-1"></i>
+                    </div>
+                </div>
+            </div>
+            <div class="card-footer">
+                <a asp-controller="Clientes" asp-action="Index" class="text-white text-decoration-none">
+                    Ver todos <i class="bi bi-arrow-right"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card bg-info text-white">
+            <div class="card-body">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <h5 class="card-title">Funcionários</h5>
+                        <h2>@Model.TotalFuncionarios</h2>
+                    </div>
+                    <div class="align-self-center">
+                        <i class="bi bi-person-badge fs-1"></i>
+                    </div>
+                </div>
+            </div>
+            <div class="card-footer">
+                <a asp-controller="Funcionarios" asp-action="Index" class="text-white text-decoration-none">
+                    Ver todos <i class="bi bi-arrow-right"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card bg-warning text-dark">
+            <div class="card-body">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <h5 class="card-title">Vendas do Mês</h5>
+                        <h2>@Model.VendasMesAtual.ToString("C")</h2>
+                    </div>
+                    <div class="align-self-center">
+                        <i class="bi bi-currency-dollar fs-1"></i>
+                    </div>
+                </div>
+            </div>
+            <div class="card-footer">
+                <a asp-controller="Dashboard" asp-action="Relatorios" class="text-dark text-decoration-none">
+                    Ver relatórios <i class="bi bi-arrow-right"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Alertas de Estoque Baixo -->
+@if (Model.ProdutosEstoqueBaixo.Any())
+{
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="alert alert-warning">
+                <h5 class="alert-heading">
+                    <i class="bi bi-exclamation-triangle"></i> Atenção: Produtos com Estoque Baixo
+                </h5>
+                <p>Há @Model.ProdutosEstoqueBaixo.Count produto(s) com estoque abaixo do mínimo.</p>
+                <a asp-controller="Produtos" asp-action="EstoqueBaixo" class="btn btn-warning">
+                    <i class="bi bi-eye"></i> Ver Produtos
+                </a>
+            </div>
+        </div>
+    </div>
+}
+
+<!-- Conteúdo Principal -->
+<div class="row">
+    <!-- Últimas Vendas -->
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h5><i class="bi bi-cart-check"></i> Últimas Vendas</h5>
+            </div>
+            <div class="card-body">
+                @if (Model.UltimasVendas.Any())
+                {
+                    <div class="table-responsive">
+                        <table class="table table-sm">
+                            <thead>
+                                <tr>
+                                    <th>Data</th>
+                                    <th>Cliente</th>
+                                    <th>Valor</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var venda in Model.UltimasVendas)
+                                {
+                                    <tr>
+                                        <td>@venda.DataVenda.ToString("dd/MM/yyyy")</td>
+                                        <td>@(venda.Cliente?.Nome ?? "Cliente Avulso")</td>
+                                        <td>@venda.ValorTotal.ToString("C")</td>
+                                        <td>
+                                            <span class="badge bg-@(venda.Status == "Finalizada" ? "success" : "warning")">
+                                                @venda.Status
+                                            </span>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                }
+                else
+                {
+                    <p class="text-muted">Nenhuma venda registrada recentemente.</p>
+                }
+            </div>
+        </div>
+    </div>
+
+    <!-- Serviços Pendentes -->
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h5><i class="bi bi-tools"></i> Serviços Pendentes</h5>
+            </div>
+            <div class="card-body">
+                @if (Model.ServicosPendentes.Any())
+                {
+                    <div class="table-responsive">
+                        <table class="table table-sm">
+                            <thead>
+                                <tr>
+                                    <th>Data</th>
+                                    <th>Cliente</th>
+                                    <th>Tipo</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var servico in Model.ServicosPendentes)
+                                {
+                                    <tr>
+                                        <td>@servico.DataServico.ToString("dd/MM/yyyy")</td>
+                                        <td>@servico.Cliente.Nome</td>
+                                        <td>@servico.TipoServico</td>
+                                        <td>
+                                            <span class="badge bg-@(servico.Status == "Pendente" ? "danger" : "warning")">
+                                                @servico.Status
+                                            </span>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                }
+                else
+                {
+                    <p class="text-muted">Nenhum serviço pendente.</p>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Top Produtos -->
+@if (Model.TopProdutos.Any())
+{
+    <div class="row mt-4">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h5><i class="bi bi-trophy"></i> Produtos Mais Vendidos (Mês Atual)</h5>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-sm">
+                            <thead>
+                                <tr>
+                                    <th>Produto</th>
+                                    <th>Quantidade</th>
+                                    <th>Valor Total</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var produto in Model.TopProdutos)
+                                {
+                                    <tr>
+                                        <td>@produto.NomeProduto</td>
+                                        <td>@produto.QuantidadeVendida</td>
+                                        <td>@produto.ValorTotal.ToString("C")</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Produtos com Estoque Baixo -->
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h5><i class="bi bi-exclamation-triangle"></i> Produtos com Estoque Baixo</h5>
+                </div>
+                <div class="card-body">
+                    @if (Model.ProdutosEstoqueBaixo.Any())
+                    {
+                        <div class="table-responsive">
+                            <table class="table table-sm">
+                                <thead>
+                                    <tr>
+                                        <th>Produto</th>
+                                        <th>Estoque</th>
+                                        <th>Mínimo</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var produto in Model.ProdutosEstoqueBaixo.Take(5))
+                                    {
+                                        <tr>
+                                            <td>@produto.Nome</td>
+                                            <td>
+                                                <span class="badge bg-danger">@produto.QuantidadeEstoque</span>
+                                            </td>
+                                            <td>@produto.EstoqueMinimo</td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                        @if (Model.ProdutosEstoqueBaixo.Count > 5)
+                        {
+                            <a asp-controller="Produtos" asp-action="EstoqueBaixo" class="btn btn-sm btn-warning">
+                                Ver todos (@Model.ProdutosEstoqueBaixo.Count produtos)
+                            </a>
+                        }
+                    }
+                    else
+                    {
+                        <p class="text-success">
+                            <i class="bi bi-check-circle"></i> Todos os produtos estão com estoque adequado!
+                        </p>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+<!-- Resumo Financeiro -->
+<div class="row mt-4">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h5><i class="bi bi-graph-up"></i> Resumo Financeiro - Últimos 30 Dias</h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="text-center">
+                            <h3 class="text-success">@Model.VendasUltimos30Dias.ToString("C")</h3>
+                            <p class="text-muted">Vendas de Produtos</p>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="text-center">
+                            <h3 class="text-info">@Model.ServicosUltimos30Dias.ToString("C")</h3>
+                            <p class="text-muted">Serviços Realizados</p>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="text-center">
+                            <h3 class="text-primary">@((Model.VendasUltimos30Dias + Model.ServicosUltimos30Dias).ToString("C"))</h3>
+                            <p class="text-muted">Faturamento Total</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

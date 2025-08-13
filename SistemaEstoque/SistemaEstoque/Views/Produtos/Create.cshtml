@@ -1,0 +1,188 @@
+@model SistemaEstoque.Models.Produto
+@{
+    ViewData["Title"] = "Novo Produto";
+}
+
+<div class="row">
+    <div class="col-12">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h2><i class="bi bi-plus-circle"></i> Novo Produto</h2>
+            <a asp-action="Index" class="btn btn-secondary">
+                <i class="bi bi-arrow-left"></i> Voltar
+            </a>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-body">
+                <form asp-action="Create">
+                    <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+                    
+                    <div class="row">
+                        <div class="col-md-8">
+                            <div class="mb-3">
+                                <label asp-for="Nome" class="form-label"></label>
+                                <input asp-for="Nome" class="form-control" placeholder="Digite o nome do produto" />
+                                <span asp-validation-for="Nome" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="mb-3">
+                                <label asp-for="CategoriaId" class="form-label">Categoria</label>
+                                <select asp-for="CategoriaId" class="form-select" asp-items="ViewBag.CategoriaId">
+                                    <option value="">Selecione uma categoria</option>
+                                </select>
+                                <span asp-validation-for="CategoriaId" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label asp-for="Descricao" class="form-label"></label>
+                        <textarea asp-for="Descricao" class="form-control" rows="3" 
+                                  placeholder="Descrição detalhada do produto"></textarea>
+                        <span asp-validation-for="Descricao" class="text-danger"></span>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="mb-3">
+                                <label asp-for="CodigoBarras" class="form-label">Código de Barras</label>
+                                <input asp-for="CodigoBarras" class="form-control" placeholder="EAN ou código interno" />
+                                <span asp-validation-for="CodigoBarras" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="mb-3">
+                                <label asp-for="QuantidadeEstoque" class="form-label">Quantidade em Estoque</label>
+                                <input asp-for="QuantidadeEstoque" class="form-control" type="number" min="0" />
+                                <span asp-validation-for="QuantidadeEstoque" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="mb-3">
+                                <label asp-for="EstoqueMinimo" class="form-label">Estoque Mínimo</label>
+                                <input asp-for="EstoqueMinimo" class="form-control" type="number" min="0" />
+                                <span asp-validation-for="EstoqueMinimo" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label asp-for="PrecoCompra" class="form-label">Preço de Compra</label>
+                                <div class="input-group">
+                                    <span class="input-group-text">R$</span>
+                                    <input asp-for="PrecoCompra" class="form-control" type="number" step="0.01" min="0" />
+                                </div>
+                                <span asp-validation-for="PrecoCompra" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label asp-for="PrecoVenda" class="form-label">Preço de Venda</label>
+                                <div class="input-group">
+                                    <span class="input-group-text">R$</span>
+                                    <input asp-for="PrecoVenda" class="form-control" type="number" step="0.01" min="0" 
+                                           id="precoVenda" onchange="calcularMargem()" />
+                                </div>
+                                <span asp-validation-for="PrecoVenda" class="text-danger"></span>
+                                <small id="margemLucro" class="form-text text-muted"></small>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <div class="form-check">
+                            <input asp-for="Ativo" class="form-check-input" type="checkbox" value="true" checked>
+                            <label asp-for="Ativo" class="form-check-label">
+                                Produto Ativo
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                        <a asp-action="Index" class="btn btn-secondary me-md-2">
+                            <i class="bi bi-x-circle"></i> Cancelar
+                        </a>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-check-circle"></i> Salvar Produto
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-header">
+                <h6><i class="bi bi-lightbulb"></i> Dicas</h6>
+            </div>
+            <div class="card-body">
+                <ul class="list-unstyled">
+                    <li><i class="bi bi-check-circle text-success"></i> Use nomes descritivos</li>
+                    <li><i class="bi bi-check-circle text-success"></i> Defina estoque mínimo adequado</li>
+                    <li><i class="bi bi-check-circle text-success"></i> Margem ideal: 20-40%</li>
+                    <li><i class="bi bi-check-circle text-success"></i> Código de barras facilita vendas</li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="card mt-3">
+            <div class="card-header">
+                <h6><i class="bi bi-calculator"></i> Calculadora de Margem</h6>
+            </div>
+            <div class="card-body">
+                <div id="calculadoraMargem" style="display: none;">
+                    <p>Margem de Lucro: <strong id="percentualMargem">0%</strong></p>
+                    <p>Lucro por Unidade: <strong id="lucroUnidade">R$ 0,00</strong></p>
+                </div>
+                <small class="text-muted">Preencha os preços para ver a margem</small>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script>
+        function calcularMargem() {
+            const precoCompra = parseFloat(document.getElementById('PrecoCompra').value) || 0;
+            const precoVenda = parseFloat(document.getElementById('precoVenda').value) || 0;
+            
+            if (precoCompra > 0 && precoVenda > 0) {
+                const margem = ((precoVenda - precoCompra) / precoVenda * 100);
+                const lucro = precoVenda - precoCompra;
+                
+                document.getElementById('percentualMargem').textContent = margem.toFixed(1) + '%';
+                document.getElementById('lucroUnidade').textContent = 'R$ ' + lucro.toFixed(2);
+                document.getElementById('calculadoraMargem').style.display = 'block';
+                
+                // Atualizar cor da margem
+                const margemElement = document.getElementById('margemLucro');
+                if (margem >= 30) {
+                    margemElement.textContent = 'Margem excelente: ' + margem.toFixed(1) + '%';
+                    margemElement.className = 'form-text text-success';
+                } else if (margem >= 15) {
+                    margemElement.textContent = 'Margem adequada: ' + margem.toFixed(1) + '%';
+                    margemElement.className = 'form-text text-warning';
+                } else {
+                    margemElement.textContent = 'Margem baixa: ' + margem.toFixed(1) + '%';
+                    margemElement.className = 'form-text text-danger';
+                }
+            } else {
+                document.getElementById('calculadoraMargem').style.display = 'none';
+                document.getElementById('margemLucro').textContent = '';
+            }
+        }
+        
+        // Calcular margem quando os campos mudarem
+        document.getElementById('PrecoCompra').addEventListener('change', calcularMargem);
+        document.getElementById('precoVenda').addEventListener('change', calcularMargem);
+    </script>
+}

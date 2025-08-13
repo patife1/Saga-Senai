@@ -1,0 +1,405 @@
+@model SistemaEstoque.ViewModels.VendaViewModel
+@{
+    ViewData["Title"] = "PDV - Ponto de Venda";
+}
+
+<div class="row">
+    <div class="col-12">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h2><i class="bi bi-cart-plus"></i> PDV - Ponto de Venda</h2>
+            <div>
+                <a asp-action="Index" class="btn btn-secondary">
+                    <i class="bi bi-list"></i> Histórico
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<form asp-action="Create" id="formVenda">
+    <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+    
+    <div class="row">
+        <!-- Painel de Busca de Produtos -->
+        <div class="col-md-7">
+            <div class="card">
+                <div class="card-header">
+                    <h5><i class="bi bi-search"></i> Buscar Produtos</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row mb-3">
+                        <div class="col-md-8">
+                            <input type="text" id="buscaProduto" class="form-control" 
+                                   placeholder="Digite o nome do produto ou código de barras">
+                        </div>
+                        <div class="col-md-4">
+                            <button type="button" class="btn btn-primary" onclick="buscarProdutos()">
+                                <i class="bi bi-search"></i> Buscar
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div id="resultadosBusca" class="d-none">
+                        <div class="table-responsive">
+                            <table class="table table-sm table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Produto</th>
+                                        <th>Categoria</th>
+                                        <th>Preço</th>
+                                        <th>Estoque</th>
+                                        <th>Ação</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="listaProdutos">
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Carrinho de Compras -->
+            <div class="card mt-3">
+                <div class="card-header">
+                    <h5><i class="bi bi-cart"></i> Carrinho de Compras</h5>
+                </div>
+                <div class="card-body">
+                    <div id="carrinhoVazio" class="text-center text-muted py-4">
+                        <i class="bi bi-cart display-4"></i>
+                        <p>Carrinho vazio. Adicione produtos para começar a venda.</p>
+                    </div>
+                    
+                    <div id="itensCarrinho" class="d-none">
+                        <div class="table-responsive">
+                            <table class="table table-sm">
+                                <thead>
+                                    <tr>
+                                        <th>Produto</th>
+                                        <th>Preço</th>
+                                        <th>Qtd</th>
+                                        <th>Subtotal</th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                                <tbody id="itensVenda">
+                                </tbody>
+                            </table>
+                        </div>
+                        
+                        <div class="row mt-3">
+                            <div class="col-md-6">
+                                <button type="button" class="btn btn-warning" onclick="limparCarrinho()">
+                                    <i class="bi bi-trash"></i> Limpar Carrinho
+                                </button>
+                            </div>
+                            <div class="col-md-6 text-end">
+                                <h4>Total: <span id="totalVenda" class="text-primary">R$ 0,00</span></h4>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Painel de Finalização -->
+        <div class="col-md-5">
+            <div class="card">
+                <div class="card-header">
+                    <h5><i class="bi bi-credit-card"></i> Finalizar Venda</h5>
+                </div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <label asp-for="ClienteId" class="form-label">Cliente (Opcional)</label>
+                        <select asp-for="ClienteId" class="form-select" asp-items="ViewBag.ClienteId">
+                            <option value="">Cliente Avulso</option>
+                        </select>
+                        <span asp-validation-for="ClienteId" class="text-danger"></span>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label asp-for="FuncionarioId" class="form-label">Funcionário</label>
+                        <select asp-for="FuncionarioId" class="form-select" asp-items="ViewBag.FuncionarioId">
+                            <option value="">Selecione o funcionário</option>
+                        </select>
+                        <span asp-validation-for="FuncionarioId" class="text-danger"></span>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label asp-for="FormaPagamento" class="form-label">Forma de Pagamento</label>
+                        <select asp-for="FormaPagamento" class="form-select">
+                            <option value="Dinheiro">Dinheiro</option>
+                            <option value="Cartão Débito">Cartão de Débito</option>
+                            <option value="Cartão Crédito">Cartão de Crédito</option>
+                            <option value="PIX">PIX</option>
+                            <option value="Transferência">Transferência</option>
+                        </select>
+                        <span asp-validation-for="FormaPagamento" class="text-danger"></span>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label asp-for="DataVenda" class="form-label">Data da Venda</label>
+                        <input asp-for="DataVenda" class="form-control" type="datetime-local" />
+                        <span asp-validation-for="DataVenda" class="text-danger"></span>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label asp-for="Observacoes" class="form-label">Observações</label>
+                        <textarea asp-for="Observacoes" class="form-control" rows="2"></textarea>
+                        <span asp-validation-for="Observacoes" class="text-danger"></span>
+                    </div>
+                    
+                    <!-- Hidden fields para os itens -->
+                    <div id="itensHidden"></div>
+                    
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-success btn-lg" id="btnFinalizar" disabled>
+                            <i class="bi bi-check-circle"></i> Finalizar Venda
+                        </button>
+                        <a asp-action="Index" class="btn btn-secondary">
+                            <i class="bi bi-x-circle"></i> Cancelar
+                        </a>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Resumo da Venda -->
+            <div class="card mt-3">
+                <div class="card-header">
+                    <h6><i class="bi bi-calculator"></i> Resumo</h6>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-6">
+                            <small class="text-muted">Itens:</small>
+                            <div id="totalItens">0</div>
+                        </div>
+                        <div class="col-6">
+                            <small class="text-muted">Quantidade:</small>
+                            <div id="totalQuantidade">0</div>
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="text-center">
+                        <h5 class="text-primary mb-0">
+                            Total: <span id="valorFinalVenda">R$ 0,00</span>
+                        </h5>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script>
+        let carrinho = [];
+        let contadorItens = 0;
+
+        // Buscar produtos
+        function buscarProdutos() {
+            const termo = document.getElementById('buscaProduto').value;
+            if (termo.length < 2) {
+                alert('Digite pelo menos 2 caracteres para buscar');
+                return;
+            }
+
+            fetch(`/Vendas/BuscarProdutos?termo=${encodeURIComponent(termo)}`)
+                .then(response => response.json())
+                .then(produtos => {
+                    const tbody = document.getElementById('listaProdutos');
+                    tbody.innerHTML = '';
+                    
+                    if (produtos.length === 0) {
+                        tbody.innerHTML = '<tr><td colspan="5" class="text-center">Nenhum produto encontrado</td></tr>';
+                    } else {
+                        produtos.forEach(produto => {
+                            tbody.innerHTML += `
+                                <tr>
+                                    <td>
+                                        <strong>${produto.nome}</strong>
+                                        ${produto.codigoBarras ? '<br><small>' + produto.codigoBarras + '</small>' : ''}
+                                    </td>
+                                    <td>${produto.categoria}</td>
+                                    <td>R$ ${produto.preco.toFixed(2)}</td>
+                                    <td><span class="badge ${produto.estoque > 0 ? 'bg-success' : 'bg-danger'}">${produto.estoque}</span></td>
+                                    <td>
+                                        <button type="button" class="btn btn-sm btn-primary" 
+                                                onclick="adicionarAoCarrinho(${produto.id}, '${produto.nome}', ${produto.preco}, ${produto.estoque}, '${produto.codigoBarras || ''}')"
+                                                ${produto.estoque === 0 ? 'disabled' : ''}>
+                                            <i class="bi bi-cart-plus"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                            `;
+                        });
+                    }
+                    
+                    document.getElementById('resultadosBusca').classList.remove('d-none');
+                })
+                .catch(error => {
+                    console.error('Erro:', error);
+                    alert('Erro ao buscar produtos');
+                });
+        }
+
+        // Adicionar produto ao carrinho
+        function adicionarAoCarrinho(produtoId, nome, preco, estoque, codigo) {
+            const itemExistente = carrinho.find(item => item.produtoId === produtoId);
+            
+            if (itemExistente) {
+                if (itemExistente.quantidade < estoque) {
+                    itemExistente.quantidade++;
+                    itemExistente.subtotal = itemExistente.quantidade * itemExistente.preco;
+                } else {
+                    alert('Estoque insuficiente');
+                    return;
+                }
+            } else {
+                carrinho.push({
+                    produtoId: produtoId,
+                    nome: nome,
+                    preco: preco,
+                    quantidade: 1,
+                    subtotal: preco,
+                    estoque: estoque,
+                    codigo: codigo
+                });
+            }
+            
+            atualizarCarrinho();
+        }
+
+        // Atualizar exibição do carrinho
+        function atualizarCarrinho() {
+            const tbody = document.getElementById('itensVenda');
+            const itensHidden = document.getElementById('itensHidden');
+            
+            tbody.innerHTML = '';
+            itensHidden.innerHTML = '';
+            
+            if (carrinho.length === 0) {
+                document.getElementById('carrinhoVazio').classList.remove('d-none');
+                document.getElementById('itensCarrinho').classList.add('d-none');
+                document.getElementById('btnFinalizar').disabled = true;
+            } else {
+                document.getElementById('carrinhoVazio').classList.add('d-none');
+                document.getElementById('itensCarrinho').classList.remove('d-none');
+                document.getElementById('btnFinalizar').disabled = false;
+                
+                carrinho.forEach((item, index) => {
+                    tbody.innerHTML += `
+                        <tr>
+                            <td>
+                                <strong>${item.nome}</strong>
+                                ${item.codigo ? '<br><small>' + item.codigo + '</small>' : ''}
+                            </td>
+                            <td>R$ ${item.preco.toFixed(2)}</td>
+                            <td>
+                                <div class="input-group input-group-sm" style="width: 120px;">
+                                    <button type="button" class="btn btn-outline-secondary" onclick="alterarQuantidade(${index}, -1)">-</button>
+                                    <input type="number" class="form-control text-center" value="${item.quantidade}" 
+                                           onchange="alterarQuantidadeInput(${index}, this.value)" min="1" max="${item.estoque}">
+                                    <button type="button" class="btn btn-outline-secondary" onclick="alterarQuantidade(${index}, 1)">+</button>
+                                </div>
+                            </td>
+                            <td><strong>R$ ${item.subtotal.toFixed(2)}</strong></td>
+                            <td>
+                                <button type="button" class="btn btn-sm btn-danger" onclick="removerItem(${index})">
+                                    <i class="bi bi-trash"></i>
+                                </button>
+                            </td>
+                        </tr>
+                    `;
+                    
+                    // Campos hidden para envio
+                    itensHidden.innerHTML += `
+                        <input type="hidden" name="Itens[${index}].ProdutoId" value="${item.produtoId}">
+                        <input type="hidden" name="Itens[${index}].Quantidade" value="${item.quantidade}">
+                        <input type="hidden" name="Itens[${index}].PrecoUnitario" value="${item.preco}">
+                    `;
+                });
+            }
+            
+            atualizarTotais();
+        }
+
+        // Alterar quantidade
+        function alterarQuantidade(index, delta) {
+            const item = carrinho[index];
+            const novaQuantidade = item.quantidade + delta;
+            
+            if (novaQuantidade <= 0) {
+                removerItem(index);
+            } else if (novaQuantidade <= item.estoque) {
+                item.quantidade = novaQuantidade;
+                item.subtotal = item.quantidade * item.preco;
+                atualizarCarrinho();
+            } else {
+                alert('Quantidade não pode exceder o estoque disponível');
+            }
+        }
+
+        // Alterar quantidade por input
+        function alterarQuantidadeInput(index, valor) {
+            const item = carrinho[index];
+            const quantidade = parseInt(valor);
+            
+            if (quantidade <= 0) {
+                removerItem(index);
+            } else if (quantidade <= item.estoque) {
+                item.quantidade = quantidade;
+                item.subtotal = item.quantidade * item.preco;
+                atualizarCarrinho();
+            } else {
+                alert('Quantidade não pode exceder o estoque disponível');
+                atualizarCarrinho(); // Resetar valor
+            }
+        }
+
+        // Remover item
+        function removerItem(index) {
+            carrinho.splice(index, 1);
+            atualizarCarrinho();
+        }
+
+        // Limpar carrinho
+        function limparCarrinho() {
+            if (confirm('Deseja limpar todo o carrinho?')) {
+                carrinho = [];
+                atualizarCarrinho();
+            }
+        }
+
+        // Atualizar totais
+        function atualizarTotais() {
+            const totalItens = carrinho.length;
+            const totalQuantidade = carrinho.reduce((sum, item) => sum + item.quantidade, 0);
+            const totalVenda = carrinho.reduce((sum, item) => sum + item.subtotal, 0);
+            
+            document.getElementById('totalItens').textContent = totalItens;
+            document.getElementById('totalQuantidade').textContent = totalQuantidade;
+            document.getElementById('totalVenda').textContent = `R$ ${totalVenda.toFixed(2)}`;
+            document.getElementById('valorFinalVenda').textContent = `R$ ${totalVenda.toFixed(2)}`;
+        }
+
+        // Busca por Enter
+        document.getElementById('buscaProduto').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                buscarProdutos();
+            }
+        });
+
+        // Busca por código de barras (simulação)
+        document.getElementById('buscaProduto').addEventListener('input', function(e) {
+            const valor = e.target.value;
+            // Se parecer um código de barras (apenas números e com mais de 8 dígitos)
+            if (/^\d{8,}$/.test(valor)) {
+                // Simular busca automática por código
+                setTimeout(() => buscarProdutos(), 500);
+            }
+        });
+    </script>
+}

@@ -1,0 +1,302 @@
+@model SistemaEstoque.ViewModels.VendaViewModel
+@{
+    ViewData["Title"] = "Detalhes da Venda";
+}
+
+<div class="row">
+    <div class="col-12">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h2><i class="bi bi-receipt"></i> Detalhes da Venda #@Model.Id</h2>
+            <div>
+                <button onclick="window.print()" class="btn btn-success">
+                    <i class="bi bi-printer"></i> Imprimir
+                </button>
+                <a asp-action="Index" class="btn btn-secondary">
+                    <i class="bi bi-arrow-left"></i> Voltar
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <!-- Informações da Venda -->
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h5><i class="bi bi-info-circle"></i> Informações da Venda</h5>
+            </div>
+            <div class="card-body">
+                <dl class="row">
+                    <dt class="col-sm-4">Data/Hora:</dt>
+                    <dd class="col-sm-8">@Model.DataVenda.ToString("dd/MM/yyyy HH:mm")</dd>
+                    
+                    <dt class="col-sm-4">Cliente:</dt>
+                    <dd class="col-sm-8">
+                        @if (!string.IsNullOrEmpty(Model.ClienteNome))
+                        {
+                            <span>@Model.ClienteNome</span>
+                        }
+                        else
+                        {
+                            <span class="text-muted">Cliente Avulso</span>
+                        }
+                    </dd>
+                    
+                    <dt class="col-sm-4">Funcionário:</dt>
+                    <dd class="col-sm-8">@Model.FuncionarioNome</dd>
+                    
+                    <dt class="col-sm-4">Forma de Pagamento:</dt>
+                    <dd class="col-sm-8">
+                        <span class="badge bg-secondary">@Model.FormaPagamento</span>
+                    </dd>
+                    
+                    @if (!string.IsNullOrEmpty(Model.Observacoes))
+                    {
+                        <dt class="col-sm-4">Observações:</dt>
+                        <dd class="col-sm-8">@Model.Observacoes</dd>
+                    }
+                </dl>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Resumo Financeiro -->
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h5><i class="bi bi-calculator"></i> Resumo Financeiro</h5>
+            </div>
+            <div class="card-body">
+                <div class="row text-center">
+                    <div class="col-6">
+                        <div class="border-end">
+                            <h4 class="text-primary">@Model.Itens.Count</h4>
+                            <small class="text-muted">Itens Diferentes</small>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <h4 class="text-info">@Model.QuantidadeItens</h4>
+                        <small class="text-muted">Quantidade Total</small>
+                    </div>
+                </div>
+                <hr>
+                <div class="text-center">
+                    <h3 class="text-success mb-0">R$ @Model.Total.ToString("N2")</h3>
+                    <small class="text-muted">Valor Total da Venda</small>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Gráfico de Composição (se houver múltiplos itens) -->
+        @if (Model.Itens.Count > 1)
+        {
+            <div class="card mt-3">
+                <div class="card-header">
+                    <h6><i class="bi bi-pie-chart"></i> Composição da Venda</h6>
+                </div>
+                <div class="card-body">
+                    <canvas id="chartComposicao" width="400" height="200"></canvas>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+<!-- Itens da Venda -->
+<div class="card mt-3">
+    <div class="card-header">
+        <h5><i class="bi bi-list-ul"></i> Itens da Venda</h5>
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Produto</th>
+                        <th>Preço Unitário</th>
+                        <th>Quantidade</th>
+                        <th>Subtotal</th>
+                        <th>% do Total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model.Itens)
+                    {
+                        var percentual = Model.Total > 0 ? (item.Subtotal / Model.Total * 100) : 0;
+                        <tr>
+                            <td>
+                                <strong>@item.ProdutoNome</strong>
+                                @if (!string.IsNullOrEmpty(item.CodigoBarras))
+                                {
+                                    <br><small class="text-muted">@item.CodigoBarras</small>
+                                }
+                            </td>
+                            <td>R$ @item.PrecoUnitario.ToString("N2")</td>
+                            <td>
+                                <span class="badge bg-primary">@item.Quantidade</span>
+                            </td>
+                            <td>
+                                <strong>R$ @item.Subtotal.ToString("N2")</strong>
+                            </td>
+                            <td>
+                                <div class="progress" style="height: 20px;">
+                                    <div class="progress-bar" role="progressbar" 
+                                         style="width: @percentual.ToString("F1", System.Globalization.CultureInfo.InvariantCulture)%">
+                                        @percentual.ToString("F1")%
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+                <tfoot class="table-light">
+                    <tr>
+                        <th colspan="2">Total</th>
+                        <th>@Model.QuantidadeItens</th>
+                        <th>R$ @Model.Total.ToString("N2")</th>
+                        <th>100,0%</th>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Ações -->
+<div class="card mt-3">
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-6">
+                <h6>Ações Disponíveis:</h6>
+                <div class="btn-group" role="group">
+                    <button onclick="window.print()" class="btn btn-success">
+                        <i class="bi bi-printer"></i> Imprimir Cupom
+                    </button>
+                    <button onclick="imprimirRelatorio()" class="btn btn-info">
+                        <i class="bi bi-file-text"></i> Relatório Detalhado
+                    </button>
+                </div>
+            </div>
+            <div class="col-md-6 text-end">
+                @if (Model.DataVenda.Date == DateTime.Today)
+                {
+                    <div class="btn-group" role="group">
+                        <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning">
+                            <i class="bi bi-pencil"></i> Editar
+                        </a>
+                        <button type="button" class="btn btn-danger" onclick="confirmarCancelamento()">
+                            <i class="bi bi-x-circle"></i> Cancelar Venda
+                        </button>
+                    </div>
+                }
+                else
+                {
+                    <small class="text-muted">
+                        Vendas de outros dias não podem ser editadas ou canceladas.
+                    </small>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal de Confirmação -->
+<div class="modal fade" id="modalCancelar" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Cancelar Venda</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p>Tem certeza que deseja cancelar esta venda?</p>
+                <div class="alert alert-warning">
+                    <strong>Atenção:</strong> Esta ação não pode ser desfeita e o estoque dos produtos será restaurado.
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Não</button>
+                <form asp-action="Delete" asp-route-id="@Model.Id" method="post" style="display: inline;">
+                    <button type="submit" class="btn btn-danger">Sim, Cancelar Venda</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        function confirmarCancelamento() {
+            new bootstrap.Modal(document.getElementById('modalCancelar')).show();
+        }
+
+        function imprimirRelatorio() {
+            window.open('/Vendas/RelatorioDetalhado/@Model.Id', '_blank');
+        }
+
+        @if (Model.Itens.Count > 1)
+        {
+            <text>
+            // Gráfico de composição da venda
+            const ctx = document.getElementById('chartComposicao').getContext('2d');
+            const dados = [
+                @foreach (var item in Model.Itens)
+                {
+                    <text>{
+                        label: '@Html.Raw(item.ProdutoNome?.Replace("'", "\\'"))',
+                        data: @item.Subtotal.ToString("F2", System.Globalization.CultureInfo.InvariantCulture),
+                        backgroundColor: `hsl(${Math.random() * 360}, 70%, 60%)`
+                    },</text>
+                }
+            ];
+
+            new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: dados.map(d => d.label),
+                    datasets: [{
+                        data: dados.map(d => d.data),
+                        backgroundColor: dados.map(d => d.backgroundColor),
+                        borderWidth: 2,
+                        borderColor: '#fff'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    const value = context.parsed;
+                                    const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                                    const percentage = ((value / total) * 100).toFixed(1);
+                                    return `${context.label}: R$ ${value.toFixed(2)} (${percentage}%)`;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+            </text>
+        }
+
+        // Estilos para impressão
+        const style = document.createElement('style');
+        style.textContent = `
+            @@media print {
+                .btn, .modal, .card-header, nav, footer { display: none !important; }
+                .card { border: none !important; box-shadow: none !important; }
+                .card-body { padding: 0 !important; }
+                body { font-size: 12px; }
+                h2 { font-size: 18px; margin-bottom: 10px; }
+                .table { font-size: 11px; }
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+}

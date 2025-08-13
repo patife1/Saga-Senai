@@ -1,0 +1,214 @@
+@model SistemaEstoque.ViewModels.VendaViewModel
+@{
+    ViewData["Title"] = "Cupom de Venda";
+    Layout = null; // Remove o layout para impressão
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>@ViewData["Title"]</title>
+    <style type="text/css">
+        body {
+            font-family: 'Courier New', monospace;
+            margin: 0;
+            padding: 20px;
+            font-size: 12px;
+            line-height: 1.4;
+            width: 300px;
+        }
+        
+        .cupom {
+            border: 1px dashed #000;
+            padding: 10px;
+        }
+        
+        .cabecalho {
+            text-align: center;
+            border-bottom: 1px dashed #000;
+            padding-bottom: 10px;
+            margin-bottom: 10px;
+        }
+        
+        .logo {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        
+        .endereco {
+            font-size: 10px;
+            line-height: 1.2;
+        }
+        
+        .info-venda {
+            margin-bottom: 10px;
+            font-size: 10px;
+        }
+        
+        .item {
+            border-bottom: 1px dotted #ccc;
+            padding: 3px 0;
+            display: flex;
+            justify-content: space-between;
+        }
+        
+        .item:last-child {
+            border-bottom: none;
+        }
+        
+        .produto-info {
+            flex: 1;
+        }
+        
+        .produto-nome {
+            font-weight: bold;
+            font-size: 11px;
+        }
+        
+        .produto-detalhes {
+            font-size: 9px;
+            color: #666;
+        }
+        
+        .total-secao {
+            border-top: 1px dashed #000;
+            padding-top: 10px;
+            margin-top: 10px;
+        }
+        
+        .total-linha {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 3px;
+        }
+        
+        .total-final {
+            font-weight: bold;
+            font-size: 14px;
+            border-top: 1px solid #000;
+            padding-top: 5px;
+            margin-top: 5px;
+        }
+        
+        .rodape {
+            text-align: center;
+            margin-top: 15px;
+            padding-top: 10px;
+            border-top: 1px dashed #000;
+            font-size: 9px;
+        }
+        
+        .sem-valor-fiscal {
+            font-size: 8px;
+            text-align: center;
+            margin-top: 10px;
+            font-style: italic;
+        }
+    </style>
+    <style type="text/css" media="print">
+        body { 
+            padding: 0; 
+            margin: 0;
+        }
+        .cupom {
+            border: none;
+            padding: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="cupom">
+        <!-- Cabeçalho -->
+        <div class="cabecalho">
+            <div class="logo">SISTEMA ESTOQUE</div>
+            <div class="endereco">
+                Rua dos Comerciantes, 123<br>
+                Centro - São Paulo/SP<br>
+                CEP: 01234-567<br>
+                Tel: (11) 1234-5678
+            </div>
+        </div>
+        
+        <!-- Informações da Venda -->
+        <div class="info-venda">
+            <div><strong>CUPOM NÃO FISCAL</strong></div>
+            <div>Venda: #@Model.Id.ToString("D6")</div>
+            <div>Data: @Model.DataVenda.ToString("dd/MM/yyyy HH:mm")</div>
+            @if (!string.IsNullOrEmpty(Model.ClienteNome))
+            {
+                <div>Cliente: @Model.ClienteNome</div>
+            }
+            <div>Atendente: @Model.FuncionarioNome</div>
+            <div>Pagamento: @Model.FormaPagamento</div>
+        </div>
+        
+        <!-- Itens -->
+        <div class="itens-secao">
+            @foreach (var item in Model.Itens)
+            {
+                <div class="item">
+                    <div class="produto-info">
+                        <div class="produto-nome">@item.ProdutoNome</div>
+                        <div class="produto-detalhes">
+                            @item.Quantidade x R$ @item.PrecoUnitario.ToString("F2")
+                            @if (!string.IsNullOrEmpty(item.CodigoBarras))
+                            {
+                                @Html.Raw("<br />Cód: " + item.CodigoBarras)
+                            }
+                        </div>
+                    </div>
+                    <div style="text-align: right; font-weight: bold;">
+                        R$ @item.Subtotal.ToString("F2")
+                    </div>
+                </div>
+            }
+        </div>
+        
+        <!-- Total -->
+        <div class="total-secao">
+            <div class="total-linha">
+                <span>Qtd. Itens:</span>
+                <span>@Model.Itens.Count</span>
+            </div>
+            <div class="total-linha">
+                <span>Qtd. Total:</span>
+                <span>@Model.QuantidadeItens</span>
+            </div>
+            <div class="total-linha total-final">
+                <span>TOTAL:</span>
+                <span>R$ @Model.Total.ToString("F2")</span>
+            </div>
+        </div>
+        
+        @if (!string.IsNullOrEmpty(Model.Observacoes))
+        {
+            <div style="margin-top: 10px; padding-top: 5px; border-top: 1px dotted #ccc;">
+                <strong>Obs:</strong> @Model.Observacoes
+            </div>
+        }
+        
+        <!-- Rodapé -->
+        <div class="rodape">
+            <div>Obrigado pela preferência!</div>
+            <div>Volte sempre!</div>
+            <div style="margin-top: 5px;">
+                www.sistemaestoque.com.br
+            </div>
+        </div>
+        
+        <div class="sem-valor-fiscal">
+            ESTE CUPOM NÃO POSSUI VALOR FISCAL
+        </div>
+    </div>
+
+    <script>
+        // Auto-imprimir quando a página carregar
+        window.onload = function() {
+            setTimeout(function() {
+                window.print();
+            }, 100);
+        };
+    </script>
+</body>
+</html>

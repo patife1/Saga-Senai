@@ -1,0 +1,230 @@
+@{
+    ViewData["Title"] = "Relatórios";
+}
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <div class="card shadow-sm">
+                <div class="card-header bg-info text-white">
+                    <h4 class="mb-0">
+                        <i class="fas fa-file-pdf me-2"></i>Relatórios PDF
+                    </h4>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <!-- Relatório de Vendas -->
+                        <div class="col-md-6 col-lg-4 mb-4">
+                            <div class="card h-100 border-primary">
+                                <div class="card-body text-center">
+                                    <div class="display-4 text-primary mb-3">
+                                        <i class="fas fa-shopping-cart"></i>
+                                    </div>
+                                    <h5 class="card-title">Relatório de Vendas</h5>
+                                    <p class="card-text">Gere relatórios detalhados das vendas realizadas em um período específico.</p>
+                                    
+                                    <form asp-action="RelatorioVendas" method="get" class="mb-3">
+                                        <div class="row">
+                                            <div class="col-12 mb-2">
+                                                <label class="form-label small">Data Início:</label>
+                                                <input type="date" name="dataInicio" class="form-control form-control-sm" value="@DateTime.Now.AddDays(-30).ToString("yyyy-MM-dd")">
+                                            </div>
+                                            <div class="col-12 mb-2">
+                                                <label class="form-label small">Data Fim:</label>
+                                                <input type="date" name="dataFim" class="form-control form-control-sm" value="@DateTime.Now.ToString("yyyy-MM-dd")">
+                                            </div>
+                                        </div>
+                                        <button type="submit" class="btn btn-primary">
+                                            <i class="fas fa-download me-1"></i>Gerar PDF
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Relatório de Produtos -->
+                        <div class="col-md-6 col-lg-4 mb-4">
+                            <div class="card h-100 border-success">
+                                <div class="card-body text-center">
+                                    <div class="display-4 text-success mb-3">
+                                        <i class="fas fa-boxes"></i>
+                                    </div>
+                                    <h5 class="card-title">Relatório de Produtos</h5>
+                                    <p class="card-text">Relatório completo do estoque com informações detalhadas dos produtos.</p>
+                                    
+                                    <div class="mb-3">
+                                        <small class="text-muted">
+                                            Inclui: preços, estoque, categoria e status de cada produto
+                                        </small>
+                                    </div>
+                                    
+                                    <a asp-action="RelatorioProdutos" class="btn btn-success">
+                                        <i class="fas fa-download me-1"></i>Gerar PDF
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Relatório de Serviços -->
+                        <div class="col-md-6 col-lg-4 mb-4">
+                            <div class="card h-100 border-warning">
+                                <div class="card-body text-center">
+                                    <div class="display-4 text-warning mb-3">
+                                        <i class="fas fa-tools"></i>
+                                    </div>
+                                    <h5 class="card-title">Relatório de Serviços</h5>
+                                    <p class="card-text">Relatório dos serviços prestados em um período determinado.</p>
+                                    
+                                    <form asp-action="RelatorioServicos" method="get" class="mb-3">
+                                        <div class="row">
+                                            <div class="col-12 mb-2">
+                                                <label class="form-label small">Data Início:</label>
+                                                <input type="date" name="dataInicio" class="form-control form-control-sm" value="@DateTime.Now.AddDays(-30).ToString("yyyy-MM-dd")">
+                                            </div>
+                                            <div class="col-12 mb-2">
+                                                <label class="form-label small">Data Fim:</label>
+                                                <input type="date" name="dataFim" class="form-control form-control-sm" value="@DateTime.Now.ToString("yyyy-MM-dd")">
+                                            </div>
+                                        </div>
+                                        <button type="submit" class="btn btn-warning">
+                                            <i class="fas fa-download me-1"></i>Gerar PDF
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Relatório Dashboard -->
+                        <div class="col-md-6 col-lg-4 mb-4">
+                            <div class="card h-100 border-info">
+                                <div class="card-body text-center">
+                                    <div class="display-4 text-info mb-3">
+                                        <i class="fas fa-chart-pie"></i>
+                                    </div>
+                                    <h5 class="card-title">Relatório Dashboard</h5>
+                                    <p class="card-text">Resumo executivo com principais indicadores e métricas do sistema.</p>
+                                    
+                                    <div class="mb-3">
+                                        <small class="text-muted">
+                                            Inclui: totais, vendas mensais/anuais, alertas de estoque
+                                        </small>
+                                    </div>
+                                    
+                                    <a asp-action="RelatorioDashboard" class="btn btn-info">
+                                        <i class="fas fa-download me-1"></i>Gerar PDF
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Relatório Personalizado (em desenvolvimento) -->
+                        <div class="col-md-6 col-lg-4 mb-4">
+                            <div class="card h-100 border-secondary">
+                                <div class="card-body text-center">
+                                    <div class="display-4 text-secondary mb-3">
+                                        <i class="fas fa-cogs"></i>
+                                    </div>
+                                    <h5 class="card-title">Relatório Personalizado</h5>
+                                    <p class="card-text">Crie relatórios personalizados com filtros específicos.</p>
+                                    
+                                    <div class="mb-3">
+                                        <small class="text-muted">
+                                            Em desenvolvimento...
+                                        </small>
+                                    </div>
+                                    
+                                    <button class="btn btn-secondary" disabled>
+                                        <i class="fas fa-download me-1"></i>Em Breve
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Relatório de Clientes -->
+                        <div class="col-md-6 col-lg-4 mb-4">
+                            <div class="card h-100 border-dark">
+                                <div class="card-body text-center">
+                                    <div class="display-4 text-dark mb-3">
+                                        <i class="fas fa-users"></i>
+                                    </div>
+                                    <h5 class="card-title">Relatório de Clientes</h5>
+                                    <p class="card-text">Lista completa de clientes cadastrados no sistema.</p>
+                                    
+                                    <div class="mb-3">
+                                        <small class="text-muted">
+                                            Em desenvolvimento...
+                                        </small>
+                                    </div>
+                                    
+                                    <button class="btn btn-dark" disabled>
+                                        <i class="fas fa-download me-1"></i>Em Breve
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Instruções -->
+                    <div class="alert alert-info mt-4">
+                        <h6><i class="fas fa-info-circle me-2"></i>Instruções:</h6>
+                        <ul class="mb-0">
+                            <li>Os relatórios são gerados em formato PDF e baixados automaticamente</li>
+                            <li>Para relatórios com período, selecione as datas de início e fim</li>
+                            <li>Os relatórios incluem dados atualizados do sistema</li>
+                            <li>Produtos com estoque baixo são destacados em vermelho</li>
+                        </ul>
+                    </div>
+
+                    <!-- Estatísticas rápidas -->
+                    <div class="row mt-4">
+                        <div class="col-md-3">
+                            <div class="card bg-primary text-white">
+                                <div class="card-body text-center">
+                                    <h5><i class="fas fa-file-pdf"></i></h5>
+                                    <small>Relatórios Disponíveis</small>
+                                    <h4>4</h4>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="card bg-success text-white">
+                                <div class="card-body text-center">
+                                    <h5><i class="fas fa-clock"></i></h5>
+                                    <small>Geração Rápida</small>
+                                    <h4>&lt; 3s</h4>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="card bg-warning text-white">
+                                <div class="card-body text-center">
+                                    <h5><i class="fas fa-download"></i></h5>
+                                    <small>Download Direto</small>
+                                    <h4>PDF</h4>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="card bg-info text-white">
+                                <div class="card-body text-center">
+                                    <h5><i class="fas fa-chart-bar"></i></h5>
+                                    <small>Dados Atualizados</small>
+                                    <h4>Real-time</h4>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        // Configurar datas padrão (últimos 30 dias para data início)
+        $(document).ready(function() {
+            // Já configurado nos values dos inputs
+        });
+    </script>
+}

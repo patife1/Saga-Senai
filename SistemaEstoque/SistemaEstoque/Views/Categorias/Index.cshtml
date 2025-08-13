@@ -1,0 +1,91 @@
+@model IEnumerable<SistemaEstoque.Models.Categoria>
+@{
+    ViewData["Title"] = "Categorias";
+}
+
+<div class="row">
+    <div class="col-12">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h2><i class="bi bi-tags"></i> Categorias</h2>
+            <a asp-action="Create" class="btn btn-primary">
+                <i class="bi bi-plus-circle"></i> Nova Categoria
+            </a>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-body">
+                @if (Model.Any())
+                {
+                    <div class="table-responsive">
+                        <table class="table table-striped table-hover">
+                            <thead class="table-dark">
+                                <tr>
+                                    <th>Nome</th>
+                                    <th>Descrição</th>
+                                    <th>Data Cadastro</th>
+                                    <th>Status</th>
+                                    <th>Produtos</th>
+                                    <th>Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var categoria in Model)
+                                {
+                                    <tr>
+                                        <td><strong>@categoria.Nome</strong></td>
+                                        <td>@(categoria.Descricao ?? "Sem descrição")</td>
+                                        <td>@categoria.DataCadastro.ToString("dd/MM/yyyy")</td>
+                                        <td>
+                                            @if (categoria.Ativo)
+                                            {
+                                                <span class="badge bg-success">Ativo</span>
+                                            }
+                                            else
+                                            {
+                                                <span class="badge bg-danger">Inativo</span>
+                                            }
+                                        </td>
+                                        <td>
+                                            <span class="badge bg-info">@categoria.Produtos.Count</span>
+                                        </td>
+                                        <td>
+                                            <div class="btn-group" role="group">
+                                                <a asp-action="Details" asp-route-id="@categoria.Id" 
+                                                   class="btn btn-outline-info btn-sm" title="Detalhes">
+                                                    <i class="bi bi-eye"></i>
+                                                </a>
+                                                <a asp-action="Edit" asp-route-id="@categoria.Id" 
+                                                   class="btn btn-outline-warning btn-sm" title="Editar">
+                                                    <i class="bi bi-pencil"></i>
+                                                </a>
+                                                <a asp-action="Delete" asp-route-id="@categoria.Id" 
+                                                   class="btn btn-outline-danger btn-sm" title="Excluir">
+                                                    <i class="bi bi-trash"></i>
+                                                </a>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                }
+                else
+                {
+                    <div class="text-center py-5">
+                        <i class="bi bi-tags display-1 text-muted"></i>
+                        <h4 class="text-muted mt-3">Nenhuma categoria encontrada</h4>
+                        <p class="text-muted">Clique no botão "Nova Categoria" para adicionar a primeira categoria.</p>
+                        <a asp-action="Create" class="btn btn-primary">
+                            <i class="bi bi-plus-circle"></i> Criar Primeira Categoria
+                        </a>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,83 @@
+@model SistemaEstoque.Models.Categoria
+@{
+    ViewData["Title"] = "Nova Categoria";
+}
+
+<div class="row">
+    <div class="col-12">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h2><i class="bi bi-plus-circle"></i> Nova Categoria</h2>
+            <a asp-action="Index" class="btn btn-secondary">
+                <i class="bi bi-arrow-left"></i> Voltar
+            </a>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-body">
+                <form asp-action="Create">
+                    <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+                    
+                    <div class="mb-3">
+                        <label asp-for="Nome" class="form-label"></label>
+                        <input asp-for="Nome" class="form-control" placeholder="Digite o nome da categoria" />
+                        <span asp-validation-for="Nome" class="text-danger"></span>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label asp-for="Descricao" class="form-label"></label>
+                        <textarea asp-for="Descricao" class="form-control" rows="3" 
+                                  placeholder="Digite uma descrição para a categoria (opcional)"></textarea>
+                        <span asp-validation-for="Descricao" class="text-danger"></span>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <div class="form-check">
+                            <input asp-for="Ativo" class="form-check-input" type="checkbox" value="true" checked>
+                            <label asp-for="Ativo" class="form-check-label">
+                                Categoria Ativa
+                            </label>
+                        </div>
+                        <div class="form-text">
+                            Categorias inativas não aparecerão na listagem de produtos.
+                        </div>
+                    </div>
+                    
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                        <a asp-action="Index" class="btn btn-secondary me-md-2">
+                            <i class="bi bi-x-circle"></i> Cancelar
+                        </a>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-check-circle"></i> Salvar Categoria
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-header">
+                <h6><i class="bi bi-info-circle"></i> Informações</h6>
+            </div>
+            <div class="card-body">
+                <p class="card-text">
+                    <strong>Nome:</strong> Nome identificador da categoria (obrigatório).
+                </p>
+                <p class="card-text">
+                    <strong>Descrição:</strong> Detalhes sobre a categoria (opcional).
+                </p>
+                <p class="card-text">
+                    <strong>Status:</strong> Define se a categoria estará disponível para uso.
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
