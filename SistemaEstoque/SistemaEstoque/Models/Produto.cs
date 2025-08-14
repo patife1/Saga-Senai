@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace SistemaEstoque.Models
 {
@@ -69,8 +70,10 @@ namespace SistemaEstoque.Models
 
         // Relacionamentos
         [ForeignKey("CategoriaId")]
+        [BindNever]
         public virtual Categoria Categoria { get; set; } = null!;
         
+        [BindNever]
         public virtual ICollection<ItemVenda> ItemVendas { get; set; } = new List<ItemVenda>();
     }
 }

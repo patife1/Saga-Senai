@@ -32,7 +32,7 @@
                         <div class="col-md-4">
                             <div class="mb-3">
                                 <label asp-for="CategoriaId" class="form-label">Categoria</label>
-                                <select asp-for="CategoriaId" class="form-select" asp-items="ViewBag.CategoriaId">
+                                <select asp-for="CategoriaId" class="form-select" asp-items="@(ViewData["CategoriaId"] as SelectList)">
                                     <option value="">Selecione uma categoria</option>
                                 </select>
                                 <span asp-validation-for="CategoriaId" class="text-danger"></span>
@@ -151,13 +151,49 @@
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
     <script>
+        // Debug: Interceptar submit do formulário
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('=== PRODUTO CREATE VIEW DEBUG ===');
+            
+            const form = document.querySelector('form');
+            if (form) {
+                form.addEventListener('submit', function(e) {
+                    console.log('=== SUBMIT FORM DEBUG ===');
+                    
+                    // Capturar todos os valores do formulário
+                    const formData = new FormData(form);
+                    console.log('Dados do formulário:');
+                    for (let [key, value] of formData.entries()) {
+                        console.log(`${key}: ${value}`);
+                    }
+                    
+                    // Verificar validação
+                    const isValid = form.checkValidity();
+                    console.log(`Formulário válido: ${isValid}`);
+                    
+                    if (!isValid) {
+                        console.log('FORMULÁRIO INVÁLIDO - cancelando submit');
+                        e.preventDefault();
+                        return false;
+                    }
+                    
+                    console.log('Enviando formulário...');
+                });
+            }
+        });
+    
         function calcularMargem() {
+            console.log('Calculando margem...');
             const precoCompra = parseFloat(document.getElementById('PrecoCompra').value) || 0;
             const precoVenda = parseFloat(document.getElementById('precoVenda').value) || 0;
+            
+            console.log(`Preço Compra: ${precoCompra}, Preço Venda: ${precoVenda}`);
             
             if (precoCompra > 0 && precoVenda > 0) {
                 const margem = ((precoVenda - precoCompra) / precoVenda * 100);
                 const lucro = precoVenda - precoCompra;
+                
+                console.log(`Margem calculada: ${margem.toFixed(1)}%, Lucro: R$ ${lucro.toFixed(2)}`);
                 
                 document.getElementById('percentualMargem').textContent = margem.toFixed(1) + '%';
                 document.getElementById('lucroUnidade').textContent = 'R$ ' + lucro.toFixed(2);

@@ -3,8 +3,6 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-#pragma warning disable CA1814 // Prefer jagged arrays over multidimensional
-
 namespace SistemaEstoque.Migrations
 {
     /// <inheritdoc />
@@ -98,7 +96,7 @@ namespace SistemaEstoque.Migrations
                     Email = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     Telefone = table.Column<string>(type: "nvarchar(15)", maxLength: 15, nullable: true),
                     Cargo = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    Salario = table.Column<decimal>(type: "decimal(18,2)", precision: 18, scale: 2, nullable: true),
+                    Salario = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
                     DataAdmissao = table.Column<DateTime>(type: "datetime2", nullable: false),
                     DataDemissao = table.Column<DateTime>(type: "datetime2", nullable: true),
                     Ativo = table.Column<bool>(type: "bit", nullable: false),
@@ -225,8 +223,8 @@ namespace SistemaEstoque.Migrations
                     Descricao = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: true),
                     CategoriaId = table.Column<int>(type: "int", nullable: false),
                     QuantidadeEstoque = table.Column<int>(type: "int", nullable: false),
-                    PrecoCompra = table.Column<decimal>(type: "decimal(18,2)", precision: 18, scale: 2, nullable: false),
-                    PrecoVenda = table.Column<decimal>(type: "decimal(18,2)", precision: 18, scale: 2, nullable: false),
+                    PrecoCompra = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    PrecoVenda = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     EstoqueMinimo = table.Column<int>(type: "int", nullable: false),
                     CodigoBarras = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
                     Ativo = table.Column<bool>(type: "bit", nullable: false),
@@ -255,7 +253,7 @@ namespace SistemaEstoque.Migrations
                     Descricao = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: false),
                     DataServico = table.Column<DateTime>(type: "datetime2", nullable: false),
                     DataConclusao = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    ValorServico = table.Column<decimal>(type: "decimal(18,2)", precision: 18, scale: 2, nullable: false),
+                    ValorServico = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     Status = table.Column<string>(type: "nvarchar(30)", maxLength: 30, nullable: false),
                     Observacoes = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: true)
                 },
@@ -267,13 +265,13 @@ namespace SistemaEstoque.Migrations
                         column: x => x.ClienteId,
                         principalTable: "Clientes",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_Servicos_Funcionarios_FuncionarioId",
                         column: x => x.FuncionarioId,
                         principalTable: "Funcionarios",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -285,7 +283,7 @@ namespace SistemaEstoque.Migrations
                     ClienteId = table.Column<int>(type: "int", nullable: true),
                     FuncionarioId = table.Column<int>(type: "int", nullable: false),
                     DataVenda = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    ValorTotal = table.Column<decimal>(type: "decimal(18,2)", precision: 18, scale: 2, nullable: false),
+                    ValorTotal = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     FormaPagamento = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     Status = table.Column<string>(type: "nvarchar(30)", maxLength: 30, nullable: false),
                     Observacoes = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: true)
@@ -297,13 +295,14 @@ namespace SistemaEstoque.Migrations
                         name: "FK_Vendas_Clientes_ClienteId",
                         column: x => x.ClienteId,
                         principalTable: "Clientes",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.SetNull);
                     table.ForeignKey(
                         name: "FK_Vendas_Funcionarios_FuncionarioId",
                         column: x => x.FuncionarioId,
                         principalTable: "Funcionarios",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -315,9 +314,10 @@ namespace SistemaEstoque.Migrations
                     VendaId = table.Column<int>(type: "int", nullable: false),
                     ProdutoId = table.Column<int>(type: "int", nullable: false),
                     Quantidade = table.Column<int>(type: "int", nullable: false),
-                    PrecoUnitario = table.Column<decimal>(type: "decimal(18,2)", precision: 18, scale: 2, nullable: false),
-                    Subtotal = table.Column<decimal>(type: "decimal(18,2)", precision: 18, scale: 2, nullable: false),
-                    PrecoCompra = table.Column<decimal>(type: "decimal(18,2)", nullable: false)
+                    PrecoUnitario = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    Subtotal = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    PrecoCompra = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    ProdutoId1 = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -329,22 +329,16 @@ namespace SistemaEstoque.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
+                        name: "FK_ItemVendas_Produtos_ProdutoId1",
+                        column: x => x.ProdutoId1,
+                        principalTable: "Produtos",
+                        principalColumn: "Id");
+                    table.ForeignKey(
                         name: "FK_ItemVendas_Vendas_VendaId",
                         column: x => x.VendaId,
                         principalTable: "Vendas",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.InsertData(
-                table: "Categorias",
-                columns: new[] { "Id", "Ativo", "DataCadastro", "Descricao", "Nome" },
-                values: new object[,]
-                {
-                    { 1, true, new DateTime(2025, 8, 13, 9, 43, 11, 220, DateTimeKind.Local).AddTicks(6439), "Componentes para refrigeradores", "Peças de Geladeira" },
-                    { 2, true, new DateTime(2025, 8, 13, 9, 43, 11, 220, DateTimeKind.Local).AddTicks(6441), "Componentes para fogões", "Peças de Fogão" },
-                    { 3, true, new DateTime(2025, 8, 13, 9, 43, 11, 220, DateTimeKind.Local).AddTicks(6442), "Componentes para microondas", "Peças de Microondas" },
-                    { 4, true, new DateTime(2025, 8, 13, 9, 43, 11, 220, DateTimeKind.Local).AddTicks(6443), "Ferramentas para manutenção", "Ferramentas" }
                 });
 
             migrationBuilder.CreateIndex(
@@ -387,21 +381,14 @@ namespace SistemaEstoque.Migrations
                 filter: "[NormalizedUserName] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Funcionarios_CPF",
-                table: "Funcionarios",
-                column: "CPF",
-                unique: true);
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Funcionarios_Email",
-                table: "Funcionarios",
-                column: "Email",
-                unique: true);
-
-            migrationBuilder.CreateIndex(
                 name: "IX_ItemVendas_ProdutoId",
                 table: "ItemVendas",
                 column: "ProdutoId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ItemVendas_ProdutoId1",
+                table: "ItemVendas",
+                column: "ProdutoId1");
 
             migrationBuilder.CreateIndex(
                 name: "IX_ItemVendas_VendaId",

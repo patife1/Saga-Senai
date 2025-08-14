@@ -12,8 +12,8 @@ using SistemaEstoque.Data;
 namespace SistemaEstoque.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250813140430_FixForeignKeyRelationships")]
-    partial class FixForeignKeyRelationships
+    [Migration("20250814104910_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -447,9 +447,6 @@ namespace SistemaEstoque.Migrations
                     b.Property<int>("ClienteId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("ClienteId1")
-                        .HasColumnType("int");
-
                     b.Property<DateTime?>("DataConclusao")
                         .HasColumnType("datetime2");
 
@@ -485,8 +482,6 @@ namespace SistemaEstoque.Migrations
 
                     b.HasIndex("ClienteId");
 
-                    b.HasIndex("ClienteId1");
-
                     b.HasIndex("FuncionarioId");
 
                     b.ToTable("Servicos");
@@ -501,9 +496,6 @@ namespace SistemaEstoque.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<int?>("ClienteId")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("ClienteId1")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("DataVenda")
@@ -532,8 +524,6 @@ namespace SistemaEstoque.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("ClienteId");
-
-                    b.HasIndex("ClienteId1");
 
                     b.HasIndex("FuncionarioId");
 
@@ -628,14 +618,10 @@ namespace SistemaEstoque.Migrations
             modelBuilder.Entity("SistemaEstoque.Models.Servico", b =>
                 {
                     b.HasOne("SistemaEstoque.Models.Cliente", "Cliente")
-                        .WithMany()
+                        .WithMany("Servicos")
                         .HasForeignKey("ClienteId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
-
-                    b.HasOne("SistemaEstoque.Models.Cliente", null)
-                        .WithMany("Servicos")
-                        .HasForeignKey("ClienteId1");
 
                     b.HasOne("SistemaEstoque.Models.Funcionario", "Funcionario")
                         .WithMany("Servicos")
@@ -651,13 +637,9 @@ namespace SistemaEstoque.Migrations
             modelBuilder.Entity("SistemaEstoque.Models.Venda", b =>
                 {
                     b.HasOne("SistemaEstoque.Models.Cliente", "Cliente")
-                        .WithMany()
+                        .WithMany("Vendas")
                         .HasForeignKey("ClienteId")
                         .OnDelete(DeleteBehavior.SetNull);
-
-                    b.HasOne("SistemaEstoque.Models.Cliente", null)
-                        .WithMany("Vendas")
-                        .HasForeignKey("ClienteId1");
 
                     b.HasOne("SistemaEstoque.Models.Funcionario", "Funcionario")
                         .WithMany("Vendas")
