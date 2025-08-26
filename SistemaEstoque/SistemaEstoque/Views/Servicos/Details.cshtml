@@ -1,0 +1,181 @@
+@model SistemaEstoque.Models.Servico
+
+@{
+    ViewData["Title"] = "Detalhes do Serviço";
+}
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header bg-info text-white">
+                    <h4 class="mb-0">
+                        <i class="bi bi-tools"></i> Detalhes do Serviço
+                    </h4>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <dl class="row">
+                                <dt class="col-sm-4">Tipo de Serviço</dt>
+                                <dd class="col-sm-8">@Html.DisplayFor(model => model.TipoServico)</dd>
+
+                                <dt class="col-sm-4">@Html.DisplayNameFor(model => model.Cliente)</dt>
+                                <dd class="col-sm-8">@Html.DisplayFor(model => model.Cliente.Nome)</dd>
+
+                                <dt class="col-sm-4">@Html.DisplayNameFor(model => model.Funcionario)</dt>
+                                <dd class="col-sm-8">@Html.DisplayFor(model => model.Funcionario.Nome)</dd>
+
+                                <dt class="col-sm-4">@Html.DisplayNameFor(model => model.DataServico)</dt>
+                                <dd class="col-sm-8">@Html.DisplayFor(model => model.DataServico)</dd>
+
+                                @if (Model.DataConclusao.HasValue)
+                                {
+                                    <dt class="col-sm-4">@Html.DisplayNameFor(model => model.DataConclusao)</dt>
+                                    <dd class="col-sm-8">@Html.DisplayFor(model => model.DataConclusao)</dd>
+                                }
+                            </dl>
+                        </div>
+                        <div class="col-md-6">
+                            <dl class="row">
+                                <dt class="col-sm-4">@Html.DisplayNameFor(model => model.ValorServico)</dt>
+                                <dd class="col-sm-8">@Html.DisplayFor(model => model.ValorServico)</dd>
+
+                                <dt class="col-sm-4">@Html.DisplayNameFor(model => model.Status)</dt>
+                                <dd class="col-sm-8">
+                                    @if (Model.Status == "Concluído")
+                                    {
+                                        <span class="badge bg-success">@Model.Status</span>
+                                    }
+                                    else if (Model.Status == "Em Andamento")
+                                    {
+                                        <span class="badge bg-warning">@Model.Status</span>
+                                    }
+                                    else if (Model.Status == "Agendado")
+                                    {
+                                        <span class="badge bg-info">@Model.Status</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-danger">@Model.Status</span>
+                                    }
+                                </dd>
+                            </dl>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-12">
+                            <dl class="row">
+                                <dt class="col-sm-2">@Html.DisplayNameFor(model => model.Descricao)</dt>
+                                <dd class="col-sm-10">@Html.DisplayFor(model => model.Descricao)</dd>
+
+                                @if (!string.IsNullOrEmpty(Model.Observacoes))
+                                {
+                                    <dt class="col-sm-2">@Html.DisplayNameFor(model => model.Observacoes)</dt>
+                                    <dd class="col-sm-10">@Html.DisplayFor(model => model.Observacoes)</dd>
+                                }
+                            </dl>
+                        </div>
+                    </div>
+
+                    @if (Model.Status != "Concluído" && Model.Status != "Cancelado")
+                    {
+                        <div class="alert alert-info">
+                            <i class="bi bi-info-circle"></i>
+                            <strong>Status:</strong> Este serviço ainda está em andamento.
+                        </div>
+                    }
+                </div>
+                <div class="card-footer">
+                    <div class="btn-group" role="group">
+                        <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning">
+                            <i class="bi bi-pencil"></i> Editar
+                        </a>
+                        @if (Model.Status != "Concluído")
+                        {
+                            <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#concluirModal">
+                                <i class="bi bi-check-circle"></i> Concluir Serviço
+                            </button>
+                        }
+                        <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal">
+                            <i class="bi bi-trash"></i> Excluir
+                        </button>
+                        <a asp-action="Index" class="btn btn-secondary">
+                            <i class="bi bi-arrow-left"></i> Voltar para Lista
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal de Conclusão -->
+@if (Model.Status != "Concluído")
+{
+    <div class="modal fade" id="concluirModal" tabindex="-1" aria-labelledby="concluirModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header bg-success text-white">
+                    <h5 class="modal-title" id="concluirModalLabel">
+                        <i class="bi bi-check-circle"></i> Concluir Serviço
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form asp-action="Concluir" method="post">
+                    <div class="modal-body">
+                        <input type="hidden" name="id" value="@Model.Id" />
+                        <p>Confirma a conclusão do serviço <strong>@Model.TipoServico</strong>?</p>
+                        
+                        <div class="mb-3">
+                            <label for="observacoesConclusao" class="form-label">Observações da Conclusão:</label>
+                            <textarea class="form-control" id="observacoesConclusao" name="observacoesConclusao" rows="3" 
+                                      placeholder="Adicione observações sobre a conclusão do serviço..."></textarea>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                            <i class="bi bi-x"></i> Cancelar
+                        </button>
+                        <button type="submit" class="btn btn-success">
+                            <i class="bi bi-check-circle"></i> Confirmar Conclusão
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+}
+
+<!-- Modal de Exclusão -->
+<div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-danger text-white">
+                <h5 class="modal-title" id="deleteModalLabel">
+                    <i class="bi bi-exclamation-triangle"></i> Confirmar Exclusão
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>Tem certeza que deseja excluir o serviço <strong>@Model.TipoServico</strong>?</p>
+                <div class="alert alert-warning">
+                    <i class="bi bi-exclamation-triangle"></i>
+                    <strong>Atenção:</strong> Esta ação não pode ser desfeita.
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <i class="bi bi-x"></i> Cancelar
+                </button>
+                <form asp-action="Delete" method="post" style="display: inline;">
+                    <input type="hidden" asp-for="Id" />
+                    <button type="submit" class="btn btn-danger">
+                        <i class="bi bi-trash"></i> Confirmar Exclusão
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

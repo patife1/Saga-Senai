@@ -1,0 +1,134 @@
+@model SistemaEstoque.Models.Servico
+
+@{
+    ViewData["Title"] = "Excluir Serviço";
+}
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
+            <div class="card border-danger">
+                <div class="card-header bg-danger text-white">
+                    <h4 class="mb-0">
+                        <i class="bi bi-exclamation-triangle"></i> Confirmar Exclusão
+                    </h4>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-danger">
+                        <i class="bi bi-exclamation-triangle"></i>
+                        <strong>Atenção:</strong> Você está prestes a excluir o seguinte serviço:
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <dl class="row">
+                                <dt class="col-sm-5">Tipo de Serviço</dt>
+                                <dd class="col-sm-7">@Html.DisplayFor(model => model.TipoServico)</dd>
+
+                                <dt class="col-sm-5">@Html.DisplayNameFor(model => model.Cliente)</dt>
+                                <dd class="col-sm-7">@Html.DisplayFor(model => model.Cliente.Nome)</dd>
+
+                                <dt class="col-sm-5">@Html.DisplayNameFor(model => model.Funcionario)</dt>
+                                <dd class="col-sm-7">@Html.DisplayFor(model => model.Funcionario.Nome)</dd>
+
+                                <dt class="col-sm-5">@Html.DisplayNameFor(model => model.DataServico)</dt>
+                                <dd class="col-sm-7">@Html.DisplayFor(model => model.DataServico)</dd>
+                            </dl>
+                        </div>
+                        <div class="col-md-6">
+                            <dl class="row">
+                                <dt class="col-sm-5">@Html.DisplayNameFor(model => model.ValorServico)</dt>
+                                <dd class="col-sm-7">@Html.DisplayFor(model => model.ValorServico)</dd>
+
+                                <dt class="col-sm-5">@Html.DisplayNameFor(model => model.Status)</dt>
+                                <dd class="col-sm-7">
+                                    @if (Model.Status == "Concluído")
+                                    {
+                                        <span class="badge bg-success">@Model.Status</span>
+                                    }
+                                    else if (Model.Status == "Em Andamento")
+                                    {
+                                        <span class="badge bg-warning">@Model.Status</span>
+                                    }
+                                    else if (Model.Status == "Agendado")
+                                    {
+                                        <span class="badge bg-info">@Model.Status</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-danger">@Model.Status</span>
+                                    }
+                                </dd>
+
+                                @if (Model.DataConclusao.HasValue)
+                                {
+                                    <dt class="col-sm-5">@Html.DisplayNameFor(model => model.DataConclusao)</dt>
+                                    <dd class="col-sm-7">@Html.DisplayFor(model => model.DataConclusao)</dd>
+                                }
+                            </dl>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-12">
+                            <dl class="row">
+                                <dt class="col-sm-2">@Html.DisplayNameFor(model => model.Descricao)</dt>
+                                <dd class="col-sm-10">@Html.DisplayFor(model => model.Descricao)</dd>
+
+                                @if (!string.IsNullOrEmpty(Model.Observacoes))
+                                {
+                                    <dt class="col-sm-2">@Html.DisplayNameFor(model => model.Observacoes)</dt>
+                                    <dd class="col-sm-10">@Html.DisplayFor(model => model.Observacoes)</dd>
+                                }
+                            </dl>
+                        </div>
+                    </div>
+
+                    @if (Model.Status == "Em Andamento")
+                    {
+                        <div class="alert alert-warning mt-3">
+                            <i class="bi bi-exclamation-triangle"></i>
+                            <strong>Importante:</strong> Este serviço está em andamento. 
+                            Tem certeza que deseja excluí-lo?
+                        </div>
+                    }
+
+                    @if (Model.Status == "Concluído")
+                    {
+                        <div class="alert alert-info mt-3">
+                            <i class="bi bi-info-circle"></i>
+                            <strong>Observação:</strong> Este serviço já foi concluído. 
+                            A exclusão removerá o registro permanentemente.
+                        </div>
+                    }
+
+                    <div class="alert alert-danger mt-3">
+                        <i class="bi bi-exclamation-triangle"></i>
+                        <strong>Atenção:</strong> Esta ação não pode ser desfeita. 
+                        O serviço será removido permanentemente do sistema.
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <form asp-action="Delete" method="post">
+                        <input type="hidden" asp-for="Id" />
+                        <div class="btn-group" role="group">
+                            <button type="submit" class="btn btn-danger">
+                                <i class="bi bi-trash"></i> Confirmar Exclusão
+                            </button>
+                            <a asp-action="Details" asp-route-id="@Model.Id" class="btn btn-info">
+                                <i class="bi bi-eye"></i> Ver Detalhes
+                            </a>
+                            <a asp-action="Index" class="btn btn-secondary">
+                                <i class="bi bi-arrow-left"></i> Cancelar
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

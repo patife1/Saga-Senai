@@ -9,7 +9,7 @@ var connectionString = builder.Configuration.GetConnectionString("DefaultConnect
     throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseSqlServer(connectionString));
+    options.UseSqlite(connectionString));
 
 builder.Services.AddDefaultIdentity<IdentityUser>(options => {
     options.SignIn.RequireConfirmedAccount = false;
@@ -51,18 +51,25 @@ app.MapControllerRoute(
 
 app.MapRazorPages();
 
-// Configurar dados iniciais
+// Garantir que o banco de dados seja criado
 using (var scope = app.Services.CreateScope())
 {
-    var services = scope.ServiceProvider;
+    var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
     try
     {
-        await SistemaEstoque.Data.SeedData.Initialize(services);
+        // Criar o banco se não existir
+        context.Database.EnsureCreated();
+        
+        // Ou aplicar migrations pendentes
+        // context.Database.Migrate();
+        
+        var logger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
+        logger.LogInformation("Banco de dados criado/verificado com sucesso.");
     }
     catch (Exception ex)
     {
-        var logger = services.GetRequiredService<ILogger<Program>>();
-        logger.LogError(ex, "Erro ao inicializar dados padrão.");
+        var logger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
+        logger.LogError(ex, "Erro ao criar/verificar banco de dados.");
     }
 }
 

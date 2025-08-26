@@ -38,10 +38,8 @@ namespace SistemaEstoque.Models
         public decimal PrecoCompra { get; set; }
 
         // Relacionamentos
-        [ForeignKey("VendaId")]
         public virtual Venda Venda { get; set; } = null!;
 
-        [ForeignKey("ProdutoId")]
         public virtual Produto Produto { get; set; } = null!;
     }
 }

@@ -1,0 +1,105 @@
+@model SistemaEstoque.Models.Funcionario
+
+@{
+    ViewData["Title"] = "Excluir Funcionário";
+}
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
+            <div class="card border-danger">
+                <div class="card-header bg-danger text-white">
+                    <h4 class="mb-0">
+                        <i class="bi bi-exclamation-triangle"></i> Confirmar Exclusão
+                    </h4>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-danger">
+                        <i class="bi bi-exclamation-triangle"></i>
+                        <strong>Atenção:</strong> Você está prestes a excluir (desligar) o seguinte funcionário:
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <dl class="row">
+                                <dt class="col-sm-4">@Html.DisplayNameFor(model => model.Nome)</dt>
+                                <dd class="col-sm-8">@Html.DisplayFor(model => model.Nome)</dd>
+
+                                <dt class="col-sm-4">@Html.DisplayNameFor(model => model.CPF)</dt>
+                                <dd class="col-sm-8">@Html.DisplayFor(model => model.CPF)</dd>
+
+                                <dt class="col-sm-4">@Html.DisplayNameFor(model => model.Email)</dt>
+                                <dd class="col-sm-8">@Html.DisplayFor(model => model.Email)</dd>
+
+                                <dt class="col-sm-4">@Html.DisplayNameFor(model => model.Cargo)</dt>
+                                <dd class="col-sm-8">@Html.DisplayFor(model => model.Cargo)</dd>
+                            </dl>
+                        </div>
+                        <div class="col-md-6">
+                            <dl class="row">
+                                <dt class="col-sm-5">@Html.DisplayNameFor(model => model.DataAdmissao)</dt>
+                                <dd class="col-sm-7">@Html.DisplayFor(model => model.DataAdmissao)</dd>
+
+                                @if (Model.Salario.HasValue)
+                                {
+                                    <dt class="col-sm-5">@Html.DisplayNameFor(model => model.Salario)</dt>
+                                    <dd class="col-sm-7">@Html.DisplayFor(model => model.Salario)</dd>
+                                }
+
+                                <dt class="col-sm-5">Vendas Realizadas</dt>
+                                <dd class="col-sm-7">@(Model.Vendas?.Count ?? 0)</dd>
+
+                                <dt class="col-sm-5">Serviços Realizados</dt>
+                                <dd class="col-sm-7">@(Model.Servicos?.Count ?? 0)</dd>
+                            </dl>
+                        </div>
+                    </div>
+
+                    @if (Model.Vendas != null && Model.Vendas.Any())
+                    {
+                        <div class="alert alert-warning mt-3">
+                            <i class="bi bi-exclamation-triangle"></i>
+                            <strong>Importante:</strong> Este funcionário possui @Model.Vendas.Count venda(s) registrada(s). 
+                            Ao excluí-lo, ele será marcado como inativo mas os registros de vendas serão preservados.
+                        </div>
+                    }
+
+                    @if (Model.Servicos != null && Model.Servicos.Any())
+                    {
+                        <div class="alert alert-warning mt-3">
+                            <i class="bi bi-exclamation-triangle"></i>
+                            <strong>Importante:</strong> Este funcionário possui @Model.Servicos.Count serviço(s) registrado(s). 
+                            Ao excluí-lo, ele será marcado como inativo mas os registros de serviços serão preservados.
+                        </div>
+                    }
+
+                    <div class="alert alert-info mt-3">
+                        <i class="bi bi-info-circle"></i>
+                        <strong>Observação:</strong> Esta ação irá desligar o funcionário, marcando-o como inativo. 
+                        Todos os dados históricos serão preservados.
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <form asp-action="Delete" method="post">
+                        <input type="hidden" asp-for="Id" />
+                        <div class="btn-group" role="group">
+                            <button type="submit" class="btn btn-danger">
+                                <i class="bi bi-person-x"></i> Confirmar Desligamento
+                            </button>
+                            <a asp-action="Details" asp-route-id="@Model.Id" class="btn btn-secondary">
+                                <i class="bi bi-eye"></i> Ver Detalhes
+                            </a>
+                            <a asp-action="Index" class="btn btn-outline-secondary">
+                                <i class="bi bi-arrow-left"></i> Cancelar
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

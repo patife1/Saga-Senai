@@ -72,8 +72,5 @@ namespace SistemaEstoque.Models
         [ForeignKey("CategoriaId")]
         [BindNever]
         public virtual Categoria Categoria { get; set; } = null!;
-        
-        [BindNever]
-        public virtual ICollection<ItemVenda> ItemVendas { get; set; } = new List<ItemVenda>();
     }
 }

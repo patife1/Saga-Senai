@@ -42,7 +42,8 @@ namespace SistemaEstoque.Controllers
             var funcionario = await _context.Funcionarios
                 .Include(f => f.Vendas)
                 .Include(f => f.Servicos)
-                .FirstOrDefaultAsync(m => m.Id == id);
+                    .ThenInclude(s => s.Cliente)
+                .FirstOrDefaultAsync(m => m.Id == id && m.Ativo);
 
             if (funcionario == null)
             {
@@ -174,7 +175,7 @@ namespace SistemaEstoque.Controllers
             var funcionario = await _context.Funcionarios
                 .Include(f => f.Vendas)
                 .Include(f => f.Servicos)
-                .FirstOrDefaultAsync(m => m.Id == id);
+                .FirstOrDefaultAsync(m => m.Id == id && m.Ativo);
 
             if (funcionario == null)
             {

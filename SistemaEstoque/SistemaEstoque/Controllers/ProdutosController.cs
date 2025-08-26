@@ -25,7 +25,7 @@ namespace SistemaEstoque.Controllers
             if (!string.IsNullOrEmpty(searchString))
             {
                 produtos = produtos.Where(p => p.Nome.Contains(searchString) || 
-                                             p.Descricao.Contains(searchString));
+                                             (p.Descricao != null && p.Descricao.Contains(searchString)));
             }
 
             if (categoriaId.HasValue)

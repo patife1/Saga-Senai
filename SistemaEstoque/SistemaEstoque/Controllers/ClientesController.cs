@@ -22,8 +22,8 @@ namespace SistemaEstoque.Controllers
             if (!string.IsNullOrEmpty(searchString))
             {
                 clientes = clientes.Where(c => c.Nome.Contains(searchString) || 
-                                             c.CPF.Contains(searchString) ||
-                                             c.Email.Contains(searchString));
+                                             (c.CPF != null && c.CPF.Contains(searchString)) ||
+                                             (c.Email != null && c.Email.Contains(searchString)));
             }
 
             ViewData["CurrentFilter"] = searchString;

@@ -184,6 +184,31 @@ namespace SistemaEstoque.Controllers
             return RedirectToAction(nameof(Index));
         }
 
+        // POST: Servicos/Concluir
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Concluir(int id, string observacoesConclusao)
+        {
+            var servico = await _context.Servicos.FindAsync(id);
+            if (servico == null)
+                return NotFound();
+
+            servico.Status = "Concluído";
+            servico.DataConclusao = DateTime.Now;
+            
+            if (!string.IsNullOrEmpty(observacoesConclusao))
+            {
+                servico.Observacoes = string.IsNullOrEmpty(servico.Observacoes) 
+                    ? $"Conclusão: {observacoesConclusao}"
+                    : $"{servico.Observacoes}\n\nConclusão: {observacoesConclusao}";
+            }
+
+            await _context.SaveChangesAsync();
+
+            TempData["Sucesso"] = $"Serviço '{servico.TipoServico}' concluído com sucesso!";
+            return RedirectToAction(nameof(Details), new { id = id });
+        }
+
         // POST: Servicos/ConcluirServico/5
         [HttpPost]
         public async Task<IActionResult> ConcluirServico(int id)

@@ -1,0 +1,315 @@
+@model SistemaEstoque.Models.Servico
+
+@{
+    ViewData["Title"] = "Novo Serviço";
+}
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-10 offset-md-1">
+            <div class="card">
+                <div class="card-header bg-success text-white">
+                    <h4 class="mb-0">
+                        <i class="bi bi-plus-circle"></i> Cadastrar Novo Serviço
+                    </h4>
+                </div>
+                <div class="card-body">
+                    <form asp-action="Create" method="post">
+                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+                        <!-- Informações do Cliente e Funcionário -->
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label asp-for="ClienteId" class="form-label">
+                                        <i class="bi bi-person"></i> Cliente *
+                                    </label>
+                                    <select asp-for="ClienteId" class="form-select" asp-items="ViewBag.ClienteId" required>
+                                        <option value="">Selecione um cliente</option>
+                                    </select>
+                                    <span asp-validation-for="ClienteId" class="text-danger"></span>
+                                    <div class="form-text">
+                                        <i class="bi bi-info-circle"></i> Cliente que solicitou o serviço
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label asp-for="FuncionarioId" class="form-label">
+                                        <i class="bi bi-person-badge"></i> Funcionário Responsável *
+                                    </label>
+                                    <select asp-for="FuncionarioId" class="form-select" asp-items="ViewBag.FuncionarioId" required>
+                                        <option value="">Selecione um funcionário</option>
+                                    </select>
+                                    <span asp-validation-for="FuncionarioId" class="text-danger"></span>
+                                    <div class="form-text">
+                                        <i class="bi bi-info-circle"></i> Funcionário que executará o serviço
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Tipo de Serviço e Status -->
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label asp-for="TipoServico" class="form-label">
+                                        <i class="bi bi-tools"></i> Tipo de Serviço *
+                                    </label>
+                                    <select asp-for="TipoServico" class="form-select" required>
+                                        <option value="">Selecione o tipo</option>
+                                        <option value="Manutenção Preventiva">Manutenção Preventiva</option>
+                                        <option value="Manutenção Corretiva">Manutenção Corretiva</option>
+                                        <option value="Instalação">Instalação</option>
+                                        <option value="Reparo">Reparo</option>
+                                        <option value="Consultoria">Consultoria</option>
+                                        <option value="Suporte Técnico">Suporte Técnico</option>
+                                        <option value="Limpeza">Limpeza</option>
+                                        <option value="Configuração">Configuração</option>
+                                        <option value="Treinamento">Treinamento</option>
+                                        <option value="Outros">Outros</option>
+                                    </select>
+                                    <span asp-validation-for="TipoServico" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label asp-for="Status" class="form-label">
+                                        <i class="bi bi-flag"></i> Status Inicial
+                                    </label>
+                                    <select asp-for="Status" class="form-select">
+                                        <option value="Agendado" selected>Agendado</option>
+                                        <option value="Em Andamento">Em Andamento</option>
+                                    </select>
+                                    <span asp-validation-for="Status" class="text-danger"></span>
+                                    <div class="form-text">
+                                        <i class="bi bi-info-circle"></i> Status padrão: Agendado
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Datas -->
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label asp-for="DataServico" class="form-label">
+                                        <i class="bi bi-calendar-event"></i> Data e Hora do Serviço *
+                                    </label>
+                                    <input asp-for="DataServico" class="form-control" type="datetime-local" required />
+                                    <span asp-validation-for="DataServico" class="text-danger"></span>
+                                    <div class="form-text">
+                                        <i class="bi bi-info-circle"></i> Quando o serviço será executado
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label asp-for="DataConclusao" class="form-label">
+                                        <i class="bi bi-calendar-check"></i> Data de Conclusão
+                                    </label>
+                                    <input asp-for="DataConclusao" class="form-control" type="datetime-local" />
+                                    <span asp-validation-for="DataConclusao" class="text-danger"></span>
+                                    <div class="form-text">
+                                        <i class="bi bi-info-circle"></i> Deixe vazio se ainda não foi concluído
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Valor do Serviço -->
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label asp-for="ValorServico" class="form-label">
+                                        <i class="bi bi-currency-dollar"></i> Valor do Serviço *
+                                    </label>
+                                    <div class="input-group">
+                                        <span class="input-group-text">R$</span>
+                                        <input asp-for="ValorServico" class="form-control" step="0.01" min="0" placeholder="0,00" required />
+                                    </div>
+                                    <span asp-validation-for="ValorServico" class="text-danger"></span>
+                                    <div class="form-text">
+                                        <i class="bi bi-info-circle"></i> Valor cobrado pelo serviço
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <!-- Espaço para futuras funcionalidades -->
+                                <div class="mb-3">
+                                    <label class="form-label text-muted">
+                                        <i class="bi bi-info-circle"></i> Informações Adicionais
+                                    </label>
+                                    <div class="card bg-light">
+                                        <div class="card-body py-2">
+                                            <small class="text-muted">
+                                                • Todos os campos marcados com * são obrigatórios<br>
+                                                • O serviço pode ser editado após criação<br>
+                                                • Status pode ser alterado posteriormente
+                                            </small>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Descrição Detalhada -->
+                        <div class="mb-3">
+                            <label asp-for="Descricao" class="form-label">
+                                <i class="bi bi-card-text"></i> Descrição Detalhada *
+                            </label>
+                            <textarea asp-for="Descricao" class="form-control" rows="4" 
+                                      placeholder="Descreva detalhadamente o serviço a ser realizado, incluindo procedimentos, materiais necessários, objetivos, etc..."
+                                      required></textarea>
+                            <span asp-validation-for="Descricao" class="text-danger"></span>
+                            <div class="form-text">
+                                <i class="bi bi-info-circle"></i> Seja específico sobre o que será feito
+                            </div>
+                        </div>
+
+                        <!-- Observações -->
+                        <div class="mb-3">
+                            <label asp-for="Observacoes" class="form-label">
+                                <i class="bi bi-chat-dots"></i> Observações Adicionais
+                            </label>
+                            <textarea asp-for="Observacoes" class="form-control" rows="3" 
+                                      placeholder="Observações, requisitos especiais, preferências do cliente, materiais a serem fornecidos pelo cliente, etc... (opcional)"></textarea>
+                            <span asp-validation-for="Observacoes" class="text-danger"></span>
+                            <div class="form-text">
+                                <i class="bi bi-info-circle"></i> Informações complementares (opcional)
+                            </div>
+                        </div>
+
+                        <!-- Área de Ações -->
+                        <div class="card bg-light mt-4">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-8">
+                                        <h6 class="mb-2">
+                                            <i class="bi bi-check-circle text-success"></i> Pronto para cadastrar?
+                                        </h6>
+                                        <small class="text-muted">
+                                            Revise todas as informações antes de salvar. Você poderá editar este serviço posteriormente se necessário.
+                                        </small>
+                                    </div>
+                                    <div class="col-md-4 text-end">
+                                        <div class="btn-group" role="group">
+                                            <button type="submit" class="btn btn-success">
+                                                <i class="bi bi-save"></i> Cadastrar Serviço
+                                            </button>
+                                            <a asp-action="Index" class="btn btn-secondary">
+                                                <i class="bi bi-arrow-left"></i> Cancelar
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Card de Dicas -->
+            <div class="card mt-4 border-info">
+                <div class="card-header bg-info text-white">
+                    <h6 class="mb-0">
+                        <i class="bi bi-lightbulb"></i> Dicas para Cadastro de Serviços
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h6 class="text-info">📋 Tipos de Serviço Comuns:</h6>
+                            <ul class="list-unstyled">
+                                <li><i class="bi bi-arrow-right text-muted"></i> <strong>Manutenção Preventiva:</strong> Verificações regulares</li>
+                                <li><i class="bi bi-arrow-right text-muted"></i> <strong>Manutenção Corretiva:</strong> Reparos urgentes</li>
+                                <li><i class="bi bi-arrow-right text-muted"></i> <strong>Instalação:</strong> Montagem de equipamentos</li>
+                                <li><i class="bi bi-arrow-right text-muted"></i> <strong>Consultoria:</strong> Orientações técnicas</li>
+                            </ul>
+                        </div>
+                        <div class="col-md-6">
+                            <h6 class="text-info">💡 Boas Práticas:</h6>
+                            <ul class="list-unstyled">
+                                <li><i class="bi bi-arrow-right text-muted"></i> Seja específico na descrição</li>
+                                <li><i class="bi bi-arrow-right text-muted"></i> Defina prazos realistas</li>
+                                <li><i class="bi bi-arrow-right text-muted"></i> Documente materiais necessários</li>
+                                <li><i class="bi bi-arrow-right text-muted"></i> Mantenha o cliente informado</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    
+    <script>
+        $(document).ready(function() {
+            // Definir data mínima como hoje
+            const today = new Date();
+            const localDateTime = new Date(today.getTime() - today.getTimezoneOffset() * 60000);
+            const todayFormatted = localDateTime.toISOString().slice(0, 16);
+            
+            document.querySelector('input[name="DataServico"]').min = todayFormatted;
+            
+            // Se não há valor definido, usar data atual + 1 hora
+            const dataServicoInput = document.querySelector('input[name="DataServico"]');
+            if (!dataServicoInput.value) {
+                const oneHourLater = new Date(today.getTime() + 60*60*1000 - today.getTimezoneOffset() * 60000);
+                dataServicoInput.value = oneHourLater.toISOString().slice(0, 16);
+            }
+
+            // Auto-completar data de conclusão quando status for "Concluído"
+            document.getElementById('Status').addEventListener('change', function() {
+                const dataConclusao = document.querySelector('input[name="DataConclusao"]');
+                if (this.value === 'Concluído' && !dataConclusao.value) {
+                    dataConclusao.value = todayFormatted;
+                } else if (this.value !== 'Concluído') {
+                    dataConclusao.value = '';
+                }
+            });
+
+            // Validação de data
+            document.querySelector('input[name="DataConclusao"]').addEventListener('change', function() {
+                const dataServico = document.querySelector('input[name="DataServico"]').value;
+                if (this.value && dataServico && this.value < dataServico) {
+                    alert('A data de conclusão não pode ser anterior à data do serviço.');
+                    this.value = '';
+                }
+            });
+
+            // Máscara para valor monetário
+            document.querySelector('input[name="ValorServico"]').addEventListener('input', function() {
+                let value = this.value.replace(/[^\d.,]/g, '');
+                this.value = value;
+            });
+
+            // Contador de caracteres para descrição
+            const descricaoTextarea = document.querySelector('textarea[name="Descricao"]');
+            const observacoesTextarea = document.querySelector('textarea[name="Observacoes"]');
+            
+            function addCharCounter(element, maxChars = 500) {
+                const counter = document.createElement('div');
+                counter.className = 'form-text text-end';
+                counter.innerHTML = `<small><span class="char-count">0</span>/${maxChars} caracteres</small>`;
+                element.parentNode.appendChild(counter);
+                
+                element.addEventListener('input', function() {
+                    const count = this.value.length;
+                    counter.querySelector('.char-count').textContent = count;
+                    if (count > maxChars * 0.9) {
+                        counter.className = 'form-text text-end text-warning';
+                    } else {
+                        counter.className = 'form-text text-end text-muted';
+                    }
+                });
+            }
+            
+            addCharCounter(descricaoTextarea, 1000);
+            addCharCounter(observacoesTextarea, 500);
+        });
+    </script>
+}

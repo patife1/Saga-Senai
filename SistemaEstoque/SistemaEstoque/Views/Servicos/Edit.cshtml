@@ -1,0 +1,146 @@
+@model SistemaEstoque.Models.Servico
+
+@{
+    ViewData["Title"] = "Editar Serviço";
+}
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
+            <div class="card">
+                <div class="card-header bg-warning text-dark">
+                    <h4 class="mb-0">
+                        <i class="bi bi-pencil"></i> Editar Serviço
+                    </h4>
+                </div>
+                <div class="card-body">
+                    <form asp-action="Edit" method="post">
+                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                        <input type="hidden" asp-for="Id" />
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label asp-for="ClienteId" class="form-label"></label>
+                                    <select asp-for="ClienteId" class="form-select" asp-items="ViewBag.ClienteId">
+                                        <option value="">Selecione um cliente</option>
+                                    </select>
+                                    <span asp-validation-for="ClienteId" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label asp-for="FuncionarioId" class="form-label"></label>
+                                    <select asp-for="FuncionarioId" class="form-select" asp-items="ViewBag.FuncionarioId">
+                                        <option value="">Selecione um funcionário</option>
+                                    </select>
+                                    <span asp-validation-for="FuncionarioId" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label asp-for="TipoServico" class="form-label"></label>
+                                    <select asp-for="TipoServico" class="form-select">
+                                        <option value="">Selecione o tipo</option>
+                                        <option value="Manutenção">Manutenção</option>
+                                        <option value="Instalação">Instalação</option>
+                                        <option value="Reparo">Reparo</option>
+                                        <option value="Consultoria">Consultoria</option>
+                                        <option value="Suporte Técnico">Suporte Técnico</option>
+                                        <option value="Limpeza">Limpeza</option>
+                                        <option value="Outros">Outros</option>
+                                    </select>
+                                    <span asp-validation-for="TipoServico" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label asp-for="Status" class="form-label"></label>
+                                    <select asp-for="Status" class="form-select">
+                                        <option value="Agendado">Agendado</option>
+                                        <option value="Em Andamento">Em Andamento</option>
+                                        <option value="Concluído">Concluído</option>
+                                        <option value="Cancelado">Cancelado</option>
+                                    </select>
+                                    <span asp-validation-for="Status" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label asp-for="DataServico" class="form-label"></label>
+                                    <input asp-for="DataServico" class="form-control" type="datetime-local" />
+                                    <span asp-validation-for="DataServico" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label asp-for="DataConclusao" class="form-label"></label>
+                                    <input asp-for="DataConclusao" class="form-control" type="datetime-local" />
+                                    <span asp-validation-for="DataConclusao" class="text-danger"></span>
+                                    <div class="form-text">Deixe em branco se ainda não foi concluído</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="ValorServico" class="form-label"></label>
+                            <div class="input-group">
+                                <span class="input-group-text">R$</span>
+                                <input asp-for="ValorServico" class="form-control" step="0.01" />
+                            </div>
+                            <span asp-validation-for="ValorServico" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Descricao" class="form-label"></label>
+                            <textarea asp-for="Descricao" class="form-control" rows="3" placeholder="Descreva detalhadamente o serviço a ser realizado..."></textarea>
+                            <span asp-validation-for="Descricao" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Observacoes" class="form-label"></label>
+                            <textarea asp-for="Observacoes" class="form-control" rows="2" placeholder="Observações adicionais (opcional)..."></textarea>
+                            <span asp-validation-for="Observacoes" class="text-danger"></span>
+                        </div>
+
+                        <div class="card-footer bg-light">
+                            <div class="btn-group" role="group">
+                                <button type="submit" class="btn btn-warning">
+                                    <i class="bi bi-save"></i> Salvar Alterações
+                                </button>
+                                <a asp-action="Details" asp-route-id="@Model.Id" class="btn btn-info">
+                                    <i class="bi bi-eye"></i> Ver Detalhes
+                                </a>
+                                <a asp-action="Index" class="btn btn-secondary">
+                                    <i class="bi bi-arrow-left"></i> Cancelar
+                                </a>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    
+    <script>
+        // Automaticamente preencher data de conclusão quando status for alterado para "Concluído"
+        document.getElementById('Status').addEventListener('change', function() {
+            const dataConclusao = document.querySelector('input[name="DataConclusao"]');
+            if (this.value === 'Concluído' && !dataConclusao.value) {
+                const now = new Date();
+                const localDateTime = new Date(now.getTime() - now.getTimezoneOffset() * 60000);
+                dataConclusao.value = localDateTime.toISOString().slice(0, 16);
+            }
+        });
+    </script>
+}
