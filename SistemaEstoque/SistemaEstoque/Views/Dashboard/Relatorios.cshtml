@@ -1,0 +1,105 @@
+@{
+    ViewData["Title"] = "Relatórios";
+}
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0">
+                        <i class="fas fa-chart-bar me-2"></i>Relatórios do Sistema
+                    </h4>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <!-- Relatório de Vendas -->
+                        <div class="col-md-6 mb-4">
+                            <div class="card h-100">
+                                <div class="card-header bg-success text-white">
+                                    <h5 class="mb-0">
+                                        <i class="fas fa-shopping-cart me-2"></i>Relatório de Vendas
+                                    </h5>
+                                </div>
+                                <div class="card-body">
+                                    <p class="card-text">Gere relatórios detalhados de vendas por período.</p>
+                                    <form method="post" action="@Url.Action("RelatorioVendas", "Dashboard")">
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <label for="dataInicio" class="form-label">Data Início:</label>
+                                                <input type="date" class="form-control" id="dataInicio" name="dataInicio" value="@DateTime.Now.AddDays(-30).ToString("yyyy-MM-dd")" required>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label for="dataFim" class="form-label">Data Fim:</label>
+                                                <input type="date" class="form-control" id="dataFim" name="dataFim" value="@DateTime.Now.ToString("yyyy-MM-dd")" required>
+                                            </div>
+                                        </div>
+                                        <button type="submit" class="btn btn-success mt-3">
+                                            <i class="fas fa-file-pdf me-1"></i>Gerar Relatório
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Relatório de Estoque -->
+                        <div class="col-md-6 mb-4">
+                            <div class="card h-100">
+                                <div class="card-header bg-warning text-dark">
+                                    <h5 class="mb-0">
+                                        <i class="fas fa-boxes me-2"></i>Relatório de Estoque
+                                    </h5>
+                                </div>
+                                <div class="card-body">
+                                    <p class="card-text">Relatório completo do estoque atual.</p>
+                                    <form method="post" action="@Url.Action("RelatorioEstoque", "Dashboard")">
+                                        <button type="submit" class="btn btn-warning text-dark mt-3">
+                                            <i class="fas fa-file-pdf me-1"></i>Gerar Relatório
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Links Rápidos -->
+                    <div class="row mt-4">
+                        <div class="col-12">
+                            <div class="card">
+                                <div class="card-header bg-secondary text-white">
+                                    <h5 class="mb-0">
+                                        <i class="fas fa-link me-2"></i>Links Rápidos
+                                    </h5>
+                                </div>
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-md-3">
+                                            <a href="@Url.Action("Index", "Vendas")" class="btn btn-outline-primary btn-sm w-100 mb-2">
+                                                <i class="fas fa-shopping-cart me-1"></i>Ver Todas as Vendas
+                                            </a>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <a href="@Url.Action("Index", "Produtos")" class="btn btn-outline-success btn-sm w-100 mb-2">
+                                                <i class="fas fa-boxes me-1"></i>Gerenciar Produtos
+                                            </a>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <a href="@Url.Action("Index", "Servicos")" class="btn btn-outline-info btn-sm w-100 mb-2">
+                                                <i class="fas fa-tools me-1"></i>Ver Serviços
+                                            </a>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <a href="@Url.Action("Index", "Dashboard")" class="btn btn-outline-secondary btn-sm w-100 mb-2">
+                                                <i class="fas fa-tachometer-alt me-1"></i>Voltar ao Dashboard
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

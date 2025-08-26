@@ -32,9 +32,9 @@
                 <label class="form-label">Cliente</label>
                 <select name="clienteId" class="form-select">
                     <option value="">Todos os clientes</option>
-                    @if (ViewBag.Clientes != null)
+                    @if (ViewBag.Clientes is SelectList clientesList)
                     {
-                        @foreach (var cliente in ViewBag.Clientes as List<SelectListItem>)
+                        @foreach (var cliente in clientesList)
                         {
                             <option value="@cliente.Value" selected="@cliente.Selected">@cliente.Text</option>
                         }
@@ -45,9 +45,9 @@
                 <label class="form-label">Funcionário</label>
                 <select name="funcionarioId" class="form-select">
                     <option value="">Todos os funcionários</option>
-                    @if (ViewBag.Funcionarios != null)
+                    @if (ViewBag.Funcionarios is SelectList funcionariosList)
                     {
-                        @foreach (var funcionario in ViewBag.Funcionarios as List<SelectListItem>)
+                        @foreach (var funcionario in funcionariosList)
                         {
                             <option value="@funcionario.Value" selected="@funcionario.Selected">@funcionario.Text</option>
                         }

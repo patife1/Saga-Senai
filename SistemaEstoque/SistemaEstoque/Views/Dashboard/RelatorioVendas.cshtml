@@ -1,0 +1,132 @@
+@model IEnumerable<SistemaEstoque.Models.Venda>
+@{
+    ViewData["Title"] = "Relatório de Vendas";
+    var dataInicio = ViewData["DataInicio"]?.ToString();
+    var dataFim = ViewData["DataFim"]?.ToString();
+    var totalVendas = ViewData["TotalVendas"];
+    var quantidadeVendas = ViewData["QuantidadeVendas"];
+}
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header bg-success text-white d-flex justify-content-between align-items-center">
+                    <h4 class="mb-0">
+                        <i class="fas fa-shopping-cart me-2"></i>Relatório de Vendas
+                    </h4>
+                    <div>
+                        <button onclick="window.print()" class="btn btn-light btn-sm me-2">
+                            <i class="fas fa-print me-1"></i>Imprimir
+                        </button>
+                        <a href="@Url.Action("Relatorios", "Dashboard")" class="btn btn-outline-light btn-sm">
+                            <i class="fas fa-arrow-left me-1"></i>Voltar
+                        </a>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <!-- Informações do Período -->
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <div class="card bg-light">
+                                <div class="card-body text-center">
+                                    <h5 class="card-title">Período Analisado</h5>
+                                    <p class="card-text">
+                                        <strong>@dataInicio</strong> até <strong>@dataFim</strong>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="card bg-primary text-white">
+                                <div class="card-body text-center">
+                                    <h5 class="card-title">Total de Vendas</h5>
+                                    <h3 class="card-text">@quantidadeVendas</h3>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="card bg-success text-white">
+                                <div class="card-body text-center">
+                                    <h5 class="card-title">Valor Total</h5>
+                                    <h3 class="card-text">@((decimal?)totalVendas ?? 0).ToString("C")</h3>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Tabela de Vendas -->
+                    @if (Model.Any())
+                    {
+                        <div class="table-responsive">
+                            <table class="table table-striped table-hover">
+                                <thead class="table-dark">
+                                    <tr>
+                                        <th>Data</th>
+                                        <th>Cliente</th>
+                                        <th>Funcionário</th>
+                                        <th>Forma Pagamento</th>
+                                        <th>Itens</th>
+                                        <th class="text-end">Valor Total</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var venda in Model)
+                                    {
+                                        <tr>
+                                            <td>@venda.DataVenda.ToString("dd/MM/yyyy HH:mm")</td>
+                                            <td>@(venda.Cliente?.Nome ?? "Cliente não informado")</td>
+                                            <td>@(venda.Funcionario?.Nome ?? "Funcionário não informado")</td>
+                                            <td>
+                                                <span class="badge bg-info">@venda.FormaPagamento</span>
+                                            </td>
+                                            <td>
+                                                @if (venda.ItemVendas?.Any() == true)
+                                                {
+                                                    <small>
+                                                        @foreach (var item in venda.ItemVendas.Take(3))
+                                                        {
+                                                            <div>@item.Produto.Nome (@item.Quantidade)</div>
+                                                        }
+                                                        @if (venda.ItemVendas.Count() > 3)
+                                                        {
+                                                            <div class="text-muted">... e mais @(venda.ItemVendas.Count() - 3) itens</div>
+                                                        }
+                                                    </small>
+                                                }
+                                                else
+                                                {
+                                                    <small class="text-muted">Sem itens</small>
+                                                }
+                                            </td>
+                                            <td class="text-end">
+                                                <strong>@venda.ValorTotal.ToString("C")</strong>
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                                <tfoot class="table-secondary">
+                                    <tr>
+                                        <th colspan="5" class="text-end">Total Geral:</th>
+                                        <th class="text-end">@((decimal?)totalVendas ?? 0).ToString("C")</th>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="alert alert-info text-center" role="alert">
+                            <i class="fas fa-info-circle fa-2x mb-3"></i>
+                            <h5>Nenhuma venda encontrada</h5>
+                            <p>Não há vendas registradas no período selecionado.</p>
+                            <a href="@Url.Action("Relatorios", "Dashboard")" class="btn btn-primary">
+                                <i class="fas fa-arrow-left me-1"></i>Voltar aos Relatórios
+                            </a>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

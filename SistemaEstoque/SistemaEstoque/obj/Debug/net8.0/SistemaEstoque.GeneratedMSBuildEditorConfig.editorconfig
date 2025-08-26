@@ -58,8 +58,24 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRGFzaGJvYXJkXEluZGV4LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
+[C:/Users/Aluno/Documents/izabelly/Saga-Senai/SistemaEstoque/SistemaEstoque/Views/Dashboard/RelatorioEstoque.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRGFzaGJvYXJkXFJlbGF0b3Jpb0VzdG9xdWUuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/Aluno/Documents/izabelly/Saga-Senai/SistemaEstoque/SistemaEstoque/Views/Dashboard/Relatorios.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRGFzaGJvYXJkXFJlbGF0b3Jpb3MuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/Aluno/Documents/izabelly/Saga-Senai/SistemaEstoque/SistemaEstoque/Views/Dashboard/RelatorioVendas.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRGFzaGJvYXJkXFJlbGF0b3Jpb1ZlbmRhcy5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
 [C:/Users/Aluno/Documents/izabelly/Saga-Senai/SistemaEstoque/SistemaEstoque/Views/Funcionarios/Create.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRnVuY2lvbmFyaW9zXENyZWF0ZS5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/Aluno/Documents/izabelly/Saga-Senai/SistemaEstoque/SistemaEstoque/Views/Funcionarios/Edit.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRnVuY2lvbmFyaW9zXEVkaXQuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
 [C:/Users/Aluno/Documents/izabelly/Saga-Senai/SistemaEstoque/SistemaEstoque/Views/Funcionarios/Index.cshtml]
@@ -76,6 +92,14 @@ build_metadata.AdditionalFiles.CssScope =
 
 [C:/Users/Aluno/Documents/izabelly/Saga-Senai/SistemaEstoque/SistemaEstoque/Views/Produtos/Create.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUHJvZHV0b3NcQ3JlYXRlLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/Aluno/Documents/izabelly/Saga-Senai/SistemaEstoque/SistemaEstoque/Views/Produtos/Delete.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUHJvZHV0b3NcRGVsZXRlLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/Aluno/Documents/izabelly/Saga-Senai/SistemaEstoque/SistemaEstoque/Views/Produtos/Edit.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUHJvZHV0b3NcRWRpdC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
 [C:/Users/Aluno/Documents/izabelly/Saga-Senai/SistemaEstoque/SistemaEstoque/Views/Produtos/EstoqueBaixo.cshtml]
