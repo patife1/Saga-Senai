@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SistemaEstoque.Data;
@@ -6,6 +7,7 @@ using SistemaEstoque.ViewModels;
 
 namespace SistemaEstoque.Controllers
 {
+    [Authorize]
     public class DashboardController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -34,10 +36,11 @@ namespace SistemaEstoque.Controllers
                     .ToListAsync(),
 
                 // Vendas do mês atual
-                VendasMesAtual = await _context.Vendas
+                VendasMesAtual = (await _context.Vendas
                     .Where(v => v.DataVenda.Month == DateTime.Now.Month && 
                                v.DataVenda.Year == DateTime.Now.Year)
-                    .SumAsync(v => v.ValorTotal),
+                    .ToListAsync())
+                    .Sum(v => v.ValorTotal),
 
                 // Serviços pendentes
                 ServicosPendentes = await _context.Servicos
@@ -57,11 +60,12 @@ namespace SistemaEstoque.Controllers
                     .ToListAsync(),
 
                 // Top produtos mais vendidos no mês
-                TopProdutos = await _context.ItemVendas
+                TopProdutos = (await _context.ItemVendas
                     .Include(i => i.Produto)
                     .Include(i => i.Venda)
                     .Where(i => i.Venda.DataVenda.Month == DateTime.Now.Month &&
                                i.Venda.DataVenda.Year == DateTime.Now.Year)
+                    .ToListAsync())
                     .GroupBy(i => new { i.ProdutoId, i.Produto.Nome })
                     .Select(g => new TopProdutoViewModel
                     {
@@ -72,18 +76,20 @@ namespace SistemaEstoque.Controllers
                     })
                     .OrderByDescending(t => t.QuantidadeVendida)
                     .Take(5)
-                    .ToListAsync()
+                    .ToList()
             };
 
             // Calcular estatísticas por período
             var dataInicio = DateTime.Now.AddDays(-30);
-            viewModel.VendasUltimos30Dias = await _context.Vendas
+            viewModel.VendasUltimos30Dias = (await _context.Vendas
                 .Where(v => v.DataVenda >= dataInicio)
-                .SumAsync(v => v.ValorTotal);
+                .ToListAsync())
+                .Sum(v => v.ValorTotal);
 
-            viewModel.ServicosUltimos30Dias = await _context.Servicos
+            viewModel.ServicosUltimos30Dias = (await _context.Servicos
                 .Where(s => s.DataServico >= dataInicio)
-                .SumAsync(s => s.ValorServico);
+                .ToListAsync())
+                .Sum(s => s.ValorServico);
 
             return View(viewModel);
         }

@@ -38,10 +38,10 @@
                                 <input type="hidden" name="busca" value="@ViewBag.Busca" />
                                 <select name="status" class="form-select" onchange="this.form.submit()">
                                     <option value="">Todos os Status</option>
-                                    <option value="Agendado" @(ViewBag.Status == "Agendado" ? "selected" : "")>Agendado</option>
-                                    <option value="Em Andamento" @(ViewBag.Status == "Em Andamento" ? "selected" : "")>Em Andamento</option>
-                                    <option value="Concluído" @(ViewBag.Status == "Concluído" ? "selected" : "")>Concluído</option>
-                                    <option value="Cancelado" @(ViewBag.Status == "Cancelado" ? "selected" : "")>Cancelado</option>
+                                    <option value="Agendado" selected="@(ViewBag.Status == "Agendado")">Agendado</option>
+                                    <option value="Em Andamento" selected="@(ViewBag.Status == "Em Andamento")">Em Andamento</option>
+                                    <option value="Concluído" selected="@(ViewBag.Status == "Concluído")">Concluído</option>
+                                    <option value="Cancelado" selected="@(ViewBag.Status == "Cancelado")">Cancelado</option>
                                 </select>
                             </form>
                         </div>
@@ -52,16 +52,17 @@
                         </div>
                     </div>
 
+                    @{ 
+                        var agendados = Model?.Count(s => s.Status == "Agendado") ?? 0;
+                        var emAndamento = Model?.Count(s => s.Status == "Em Andamento") ?? 0;
+                        var concluidos = Model?.Count(s => s.Status == "Concluído") ?? 0;
+                        var cancelados = Model?.Count(s => s.Status == "Cancelado") ?? 0;
+                        var valorTotal = Model?.Sum(s => s.ValorServico) ?? 0;
+                    }
+
                     @if (Model != null && Model.Any())
                     {
                         <!-- Dashboard de Status -->
-                        @{
-                            var agendados = Model.Count(s => s.Status == "Agendado");
-                            var emAndamento = Model.Count(s => s.Status == "Em Andamento");
-                            var concluidos = Model.Count(s => s.Status == "Concluído");
-                            var cancelados = Model.Count(s => s.Status == "Cancelado");
-                            var valorTotal = Model.Sum(s => s.ValorServico);
-                        }
 
                         <div class="row mb-4">
                             <div class="col-md-3">

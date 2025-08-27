@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -7,6 +8,7 @@ using SistemaEstoque.ViewModels;
 
 namespace SistemaEstoque.Controllers
 {
+    [Authorize]
     public class VendasController : Controller
     {
         private readonly ApplicationDbContext _context;

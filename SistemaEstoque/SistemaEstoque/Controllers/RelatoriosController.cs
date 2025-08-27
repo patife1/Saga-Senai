@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SistemaEstoque.Data;
@@ -11,6 +12,7 @@ using iText.IO.Font.Constants;
 
 namespace SistemaEstoque.Controllers
 {
+    [Authorize]
     public class RelatoriosController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -330,17 +332,20 @@ namespace SistemaEstoque.Controllers
             var totalClientes = await _context.Clientes.CountAsync(c => c.Ativo);
             var totalFuncionarios = await _context.Funcionarios.CountAsync(f => f.Ativo);
             
-            var vendasMes = await _context.Vendas
+            var vendasMes = (await _context.Vendas
                 .Where(v => v.DataVenda >= inicioMes)
-                .SumAsync(v => v.ValorTotal);
+                .ToListAsync())
+                .Sum(v => v.ValorTotal);
             
-            var vendasAno = await _context.Vendas
+            var vendasAno = (await _context.Vendas
                 .Where(v => v.DataVenda >= inicioAno)
-                .SumAsync(v => v.ValorTotal);
+                .ToListAsync())
+                .Sum(v => v.ValorTotal);
 
-            var servicosMes = await _context.Servicos
+            var servicosMes = (await _context.Servicos
                 .Where(s => s.DataServico >= inicioMes)
-                .SumAsync(s => s.ValorServico);
+                .ToListAsync())
+                .Sum(s => s.ValorServico);
 
             var produtosEstoqueBaixo = await _context.Produtos
                 .Where(p => p.Ativo && p.QuantidadeEstoque <= p.EstoqueMinimo)

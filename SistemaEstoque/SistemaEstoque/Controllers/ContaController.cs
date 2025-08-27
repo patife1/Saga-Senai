@@ -1,9 +1,11 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using SistemaEstoque.ViewModels;
 
 namespace SistemaEstoque.Controllers
 {
+    [AllowAnonymous]
     public class ContaController : Controller
     {
         private readonly UserManager<IdentityUser> _userManager;
@@ -22,6 +24,7 @@ namespace SistemaEstoque.Controllers
 
         // GET: /Conta/Login
         [HttpGet]
+        [AllowAnonymous]
         public IActionResult Login(string? returnUrl = null)
         {
             ViewData["ReturnUrl"] = returnUrl;
@@ -31,6 +34,7 @@ namespace SistemaEstoque.Controllers
         // POST: /Conta/Login
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [AllowAnonymous]
         public async Task<IActionResult> Login(LoginViewModel model, string? returnUrl = null)
         {
             ViewData["ReturnUrl"] = returnUrl;
@@ -64,6 +68,7 @@ namespace SistemaEstoque.Controllers
 
         // GET: /Conta/Registro
         [HttpGet]
+        [AllowAnonymous]
         public IActionResult Registro()
         {
             return View();
@@ -72,6 +77,7 @@ namespace SistemaEstoque.Controllers
         // POST: /Conta/Registro
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [AllowAnonymous]
         public async Task<IActionResult> Registro(RegistroViewModel model)
         {
             if (ModelState.IsValid)
